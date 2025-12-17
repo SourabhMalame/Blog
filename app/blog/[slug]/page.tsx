@@ -24,7 +24,7 @@ export default function BlogDetailPage({ params }: BlogDetailPageProps) {
   // Simple markdown-like content parser for demo
   const renderContent = (content: string) => {
     const lines = content.split('\n');
-    const elements: JSX.Element[] = [];
+    const elements = [];
     let currentCodeBlock = '';
     let inCodeBlock = false;
     let codeLanguage = '';
@@ -94,7 +94,7 @@ export default function BlogDetailPage({ params }: BlogDetailPageProps) {
       // Inline code
       if (line.includes('`')) {
         const parts = line.split('`');
-        const jsxParts: (string | JSX.Element)[] = [];
+        const jsxParts = [];
         parts.forEach((part, i) => {
           if (i % 2 === 0) {
             jsxParts.push(part);
@@ -128,7 +128,7 @@ export default function BlogDetailPage({ params }: BlogDetailPageProps) {
       }
     });
 
-    return elements;
+    return <>{elements}</>;
   };
 
   return (
@@ -213,4 +213,3 @@ export default function BlogDetailPage({ params }: BlogDetailPageProps) {
     </div>
   );
 }
-
