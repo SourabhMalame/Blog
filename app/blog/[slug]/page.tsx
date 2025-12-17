@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import CategoryBadge from '@/components/CategoryBadge';
@@ -24,7 +25,7 @@ export default function BlogDetailPage({ params }: BlogDetailPageProps) {
   // Simple markdown-like content parser for demo
   const renderContent = (content: string) => {
     const lines = content.split('\n');
-    const elements = [];
+    const elements: React.ReactNode[] = [];
     let currentCodeBlock = '';
     let inCodeBlock = false;
     let codeLanguage = '';
@@ -94,7 +95,7 @@ export default function BlogDetailPage({ params }: BlogDetailPageProps) {
       // Inline code
       if (line.includes('`')) {
         const parts = line.split('`');
-        const jsxParts = [];
+        const jsxParts: React.ReactNode[] = [];
         parts.forEach((part, i) => {
           if (i % 2 === 0) {
             jsxParts.push(part);
@@ -128,7 +129,7 @@ export default function BlogDetailPage({ params }: BlogDetailPageProps) {
       }
     });
 
-    return <>{elements}</>;
+    return elements;
   };
 
   return (
