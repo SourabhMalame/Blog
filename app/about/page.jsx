@@ -22,32 +22,32 @@ const teamMembers = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
       <main className="flex-grow">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           {/* Hero Section */}
-          <div className="mb-16 text-center">
-            <h1 className="text-5xl font-bold text-gray-900 mb-6">About NNBlog</h1>
-            <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
+          <div className="mb-16">
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">About NNBlog</h1>
+            <div className="w-20 h-1 bg-gray-900 mb-8"></div>
           </div>
 
           {/* Mission Statement */}
-          <section className="mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
-            <div className="prose prose-lg max-w-none">
-              <p className="text-lg text-gray-700 leading-relaxed mb-4">
+          <section className="mb-20">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8">Our Mission</h2>
+            <div className="space-y-6">
+              <p className="text-xl text-gray-700 leading-relaxed">
                 At NNBlog, we believe in the power of knowledge sharing and continuous learning. 
                 Our mission is to create a platform where developers, designers, and tech enthusiasts 
                 can come together to learn, share, and grow.
               </p>
-              <p className="text-lg text-gray-700 leading-relaxed mb-4">
+              <p className="text-xl text-gray-700 leading-relaxed">
                 We're committed to providing high-quality, practical content that helps you stay 
                 up-to-date with the latest technologies, best practices, and industry trends. 
                 Whether you're a beginner just starting your journey or an experienced professional 
                 looking to expand your skills, we've got something for you.
               </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
+              <p className="text-xl text-gray-700 leading-relaxed">
                 Join us on this journey as we explore the ever-evolving world of web development 
                 and technology together.
               </p>
@@ -55,27 +55,27 @@ export default function AboutPage() {
           </section>
 
           {/* Values Section */}
-          <section className="mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Values</h2>
+          <section className="mb-20">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8">Our Values</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                <div className="text-3xl mb-4">🎯</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Focus</h3>
-                <p className="text-gray-600">
+              <div className="bg-gray-50 rounded-xl p-8 border border-gray-200">
+                <div className="text-4xl mb-4">🎯</div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">Focus</h3>
+                <p className="text-gray-600 leading-relaxed">
                   We focus on creating content that matters and provides real value to our readers.
                 </p>
               </div>
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                <div className="text-3xl mb-4">🤝</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Community</h3>
-                <p className="text-gray-600">
+              <div className="bg-gray-50 rounded-xl p-8 border border-gray-200">
+                <div className="text-4xl mb-4">🤝</div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">Community</h3>
+                <p className="text-gray-600 leading-relaxed">
                   We believe in building a supportive community where everyone can learn and grow together.
                 </p>
               </div>
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                <div className="text-3xl mb-4">✨</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Quality</h3>
-                <p className="text-gray-600">
+              <div className="bg-gray-50 rounded-xl p-8 border border-gray-200">
+                <div className="text-4xl mb-4">✨</div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">Quality</h3>
+                <p className="text-gray-600 leading-relaxed">
                   We're committed to maintaining high standards in everything we create and share.
                 </p>
               </div>
@@ -83,18 +83,18 @@ export default function AboutPage() {
           </section>
 
           {/* Team Section */}
-          <section>
+          <section className="mb-20">
             <h2 className="text-3xl font-bold text-gray-900 mb-8">Meet Our Team</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {teamMembers.map((member) => (
-                <div key={member.name} className="bg-white rounded-lg border border-gray-200 p-6">
+                <div key={member.name} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow">
                   <AuthorCard
                     name={member.name}
                     variant="card"
                   />
                   <div className="mt-4">
-                    <p className="text-sm font-medium text-blue-600 mb-2">{member.role}</p>
-                    <p className="text-gray-600 text-sm">{member.bio}</p>
+                    <p className="text-sm font-medium text-gray-700 mb-2">{member.role}</p>
+                    <p className="text-gray-600 text-sm leading-relaxed">{member.bio}</p>
                   </div>
                 </div>
               ))}
@@ -102,14 +102,14 @@ export default function AboutPage() {
           </section>
 
           {/* Contact Section */}
-          <section className="mt-16 bg-blue-50 rounded-lg p-8 border border-blue-200">
+          <section className="bg-gray-50 rounded-2xl p-10 border border-gray-200">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Get in Touch</h2>
-            <p className="text-gray-700 mb-4">
+            <p className="text-gray-700 mb-6 text-lg leading-relaxed">
               Have questions, suggestions, or want to contribute? We'd love to hear from you!
             </p>
             <a
               href="mailto:contact@nnblog.com"
-              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              className="inline-block bg-gray-900 text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition-colors"
             >
               Contact Us
             </a>

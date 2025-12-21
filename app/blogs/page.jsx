@@ -6,18 +6,18 @@ import { blogPosts } from '@/lib/mockData';
 
 export default function BlogsPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
       <main className="flex-grow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">All Blog Posts</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-3">All Stories</h1>
             <p className="text-lg text-gray-600">
               Discover our latest articles and tutorials
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="space-y-0">
             {blogPosts.map((post) => (
               <BlogCard
                 key={post.slug}
@@ -33,7 +33,9 @@ export default function BlogsPage() {
             ))}
           </div>
 
-          <Pagination currentPage={1} totalPages={3} basePath="/blogs" />
+          <div className="mt-12">
+            <Pagination currentPage={1} totalPages={3} basePath="/blogs" />
+          </div>
         </div>
       </main>
       <Footer />
