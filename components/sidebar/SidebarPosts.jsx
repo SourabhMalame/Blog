@@ -4,17 +4,17 @@ import { Clock } from "lucide-react";
 const posts = [
   {
     title: "Top Reasons Why Microsoft Discontinued Windows Phone",
-    image: "/images/tech-3.jpg",
+    image: "/demo.png",
     date: "March 05, 2020",
   },
   {
     title: "Check out some security tips to protect your data",
-    image: "/images/tech-4.jpg",
+    image: "/demo.png",
     date: "March 04, 2020",
   },
   {
     title: "Improve the performance of your smartphone battery",
-    image: "/images/tech-2.jpg",
+    image: "/demo.png",
     date: "March 03, 2020",
   },
 ];

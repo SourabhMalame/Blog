@@ -10,7 +10,7 @@ export default function Footer() {
         {/* Brand */}
         <div>
           <Link href="/" className="inline-block mb-4">
-            <Image src="/logo.png" alt="Logo" width={150} height={30} />
+            <Image src="/demo.png" alt="Logo" width={150} height={30} />
           </Link>
           <p className="text-sm leading-relaxed">
             A modern news & magazine platform focused on technology, startups,

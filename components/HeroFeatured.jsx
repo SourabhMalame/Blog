@@ -12,7 +12,7 @@ export default function HeroFeatured() {
           className="relative lg:col-span-2 h-[420px] overflow-hidden group"
         >
           <Image
-            src="/images/business.jpg"
+            src="/demo.png"
             alt="Business"
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -45,7 +45,7 @@ export default function HeroFeatured() {
           {/* TOP RIGHT */}
           <Link href="#" className="relative h-[200px] overflow-hidden group">
             <Image
-              src="/images/drones.jpg"
+              src="/demo.png"
               alt="Drones"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -71,7 +71,7 @@ export default function HeroFeatured() {
           {/* BOTTOM RIGHT */}
           <Link href="#" className="relative h-[200px] overflow-hidden group">
             <Image
-              src="/images/smartphone.jpg"
+              src="/demo.png"
               alt="Smartphones"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
