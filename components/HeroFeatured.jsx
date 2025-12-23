@@ -8,7 +8,7 @@ export default function HeroFeatured() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* LEFT BIG CARD */}
         <Link
-          href="#"
+          href="/post"
           className="relative lg:col-span-2 h-[420px] overflow-hidden group"
         >
           <Image
@@ -43,7 +43,7 @@ export default function HeroFeatured() {
         {/* RIGHT COLUMN */}
         <div className="grid grid-rows-2 gap-4">
           {/* TOP RIGHT */}
-          <Link href="#" className="relative h-[200px] overflow-hidden group">
+          <Link href="/post" className="relative h-[200px] overflow-hidden group">
             <Image
               src="/demo.png"
               alt="Drones"
@@ -69,7 +69,7 @@ export default function HeroFeatured() {
           </Link>
 
           {/* BOTTOM RIGHT */}
-          <Link href="#" className="relative h-[200px] overflow-hidden group">
+          <Link href="/post" className="relative h-[200px] overflow-hidden group">
             <Image
               src="/demo.png"
               alt="Smartphones"

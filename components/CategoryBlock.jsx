@@ -10,7 +10,7 @@ export default function CategoryBlock({ title, posts }) {
         <h3 className="bg-[#111827] text-white px-4 py-2 text-sm font-bold uppercase">
           {title}
         </h3>
-        <Link href="#" className="text-sm text-gray-400 hover:text-red-500">
+        <Link href="/post" className="text-sm text-gray-400 hover:text-red-500">
           View all
         </Link>
       </div>
@@ -19,7 +19,7 @@ export default function CategoryBlock({ title, posts }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* LEFT BIG POST */}
         <Link
-          href="#"
+          href="/post"
           className="relative lg:col-span-2 h-[360px] group overflow-hidden"
         >
           <Image
@@ -57,7 +57,7 @@ export default function CategoryBlock({ title, posts }) {
         {/* RIGHT LIST */}
         <div className="space-y-5">
           {posts.slice(1, 5).map((post, i) => (
-            <Link key={i} href="#" className="flex gap-4 group">
+          <Link key={i} href="/post" className="flex gap-4 group">
               <Image
                 src={post.image}
                 alt={post.title}

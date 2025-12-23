@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Clock } from "lucide-react";
 
 const posts = [
@@ -28,7 +29,7 @@ export default function SidebarPosts({ title }) {
 
       <div className="p-4 space-y-4">
         {posts.map((post, i) => (
-          <div key={i} className="flex gap-3">
+          <Link key={i} href="/post" className="flex gap-3 group">
             <Image
               src={post.image}
               alt={post.title}
@@ -37,12 +38,14 @@ export default function SidebarPosts({ title }) {
               className="object-cover"
             />
             <div>
-              <p className="text-sm font-medium leading-snug">{post.title}</p>
+              <p className="text-sm font-medium leading-snug group-hover:text-red-500 transition">
+                {post.title}
+              </p>
               <span className="text-xs text-gray-400 flex items-center gap-1">
                 <Clock size={12} /> {post.date}
               </span>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
