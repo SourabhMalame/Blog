@@ -31,6 +31,9 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-4 text-gray-700">
+            <Link href="/login" className="hover:text-red-500">
+              Login
+            </Link>
             <Facebook size={16} />
             <Twitter size={16} />
             <Youtube size={16} />
@@ -110,7 +113,13 @@ export default function Navbar() {
             </li>
           </ul>
 
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
+            <Link
+              href="/login"
+              className="text-white px-4 py-2 hover:bg-red-500 transition"
+            >
+              Login
+            </Link>
             <button className="text-white px-4">
               <Moon size={18} />
             </button>
@@ -120,9 +129,15 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Menu (unchanged) */}
+        {/* Mobile Menu */}
         {open && (
           <div className="md:hidden bg-[#0f172a] text-white px-4 py-4 space-y-4">
+            <Link
+              href="/login"
+              className="block py-2 border-b border-white/10 text-red-500 font-semibold"
+            >
+              Login
+            </Link>
             {["HOME", "FEATURES", "MEGA", "MEGA TABS", "DOCUMENTATION"].map(
               (item) => (
                 <div
