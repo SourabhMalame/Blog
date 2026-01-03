@@ -35,18 +35,24 @@ export default function Customise() {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Customise</h1>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">Customise</h1>
+        <p className="text-sm text-gray-500 mt-1">Customize your site settings</p>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Site Settings */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Site Settings
-          </h2>
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1 h-8 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Site Settings
+            </h2>
+          </div>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Site Name
               </label>
               <input
@@ -54,7 +60,7 @@ export default function Customise() {
                 name="siteName"
                 value={settings.siteName}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm"
               />
             </div>
             <div>
@@ -66,7 +72,7 @@ export default function Customise() {
                 value={settings.siteDescription}
                 onChange={handleChange}
                 rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm"
               />
             </div>
             <div>
@@ -78,17 +84,20 @@ export default function Customise() {
                 name="footerText"
                 value={settings.footerText}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm"
               />
             </div>
           </div>
         </div>
 
         {/* Social Media Links */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Social Media Links
-          </h2>
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1 h-8 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Social Media Links
+            </h2>
+          </div>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -99,7 +108,7 @@ export default function Customise() {
                 name="social_facebook"
                 value={settings.socialLinks.facebook}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm"
                 placeholder="https://facebook.com/yourpage"
               />
             </div>
@@ -112,7 +121,7 @@ export default function Customise() {
                 name="social_twitter"
                 value={settings.socialLinks.twitter}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm"
                 placeholder="https://twitter.com/yourhandle"
               />
             </div>
@@ -125,7 +134,7 @@ export default function Customise() {
                 name="social_youtube"
                 value={settings.socialLinks.youtube}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm"
                 placeholder="https://youtube.com/yourchannel"
               />
             </div>
@@ -138,7 +147,7 @@ export default function Customise() {
                 name="social_instagram"
                 value={settings.socialLinks.instagram}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm"
                 placeholder="https://instagram.com/yourprofile"
               />
             </div>
@@ -146,10 +155,10 @@ export default function Customise() {
         </div>
 
         {/* Save Button */}
-        <div className="flex justify-end">
+        <div className="flex justify-end pt-4">
           <button
             type="submit"
-            className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-8 py-3 rounded-xl hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/25 hover:shadow-xl hover:shadow-red-500/30 transition-all duration-200 font-semibold"
           >
             Save Changes
           </button>

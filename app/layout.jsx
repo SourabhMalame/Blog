@@ -1,5 +1,6 @@
 import { Poppins, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -21,8 +22,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={poppins.variable}>
-      <body className={`${geistMono.variable} antialiased`}>{children}</body>
+    <html lang="en" className={poppins.variable} suppressHydrationWarning>
+      <body className={`${geistMono.variable} antialiased`}>
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   );
 }

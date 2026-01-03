@@ -22,8 +22,8 @@ const posts = [
 
 export default function SidebarPosts({ title }) {
   return (
-    <div className="border">
-      <h4 className="font-bold text-sm px-4 py-3 border-b uppercase">
+    <div className="border dark:border-gray-700 bg-white dark:bg-gray-800">
+      <h4 className="font-bold text-sm px-4 py-3 border-b dark:border-gray-700 uppercase text-gray-900 dark:text-gray-100">
         {title}
       </h4>
 
@@ -38,10 +38,10 @@ export default function SidebarPosts({ title }) {
               className="object-cover"
             />
             <div>
-              <p className="text-sm font-medium leading-snug group-hover:text-red-500 transition">
+              <p className="text-sm font-medium leading-snug text-gray-900 dark:text-gray-100 group-hover:text-red-500 transition">
                 {post.title}
               </p>
-              <span className="text-xs text-gray-400 flex items-center gap-1">
+              <span className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
                 <Clock size={12} /> {post.date}
               </span>
             </div>

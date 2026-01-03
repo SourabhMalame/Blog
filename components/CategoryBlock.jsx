@@ -6,11 +6,11 @@ export default function CategoryBlock({ title, posts }) {
   return (
     <section>
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-gray-200 mb-6">
-        <h3 className="bg-[#111827] text-white px-4 py-2 text-sm font-bold uppercase">
+      <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 mb-6">
+        <h3 className="bg-[#111827] dark:bg-gray-800 text-white px-4 py-2 text-sm font-bold uppercase">
           {title}
         </h3>
-        <Link href="/post" className="text-sm text-gray-400 hover:text-red-500">
+        <Link href="/post" className="text-sm text-gray-400 dark:text-gray-500 hover:text-red-500">
           View all
         </Link>
       </div>
@@ -66,10 +66,10 @@ export default function CategoryBlock({ title, posts }) {
                 className="object-cover shrink-0"
               />
               <div>
-                <p className="font-medium text-sm leading-snug group-hover:text-red-500 transition">
+                <p className="font-medium text-sm leading-snug text-gray-900 dark:text-gray-100 group-hover:text-red-500 transition">
                   {post.title}
                 </p>
-                <div className="flex items-center gap-1 text-xs text-gray-400 mt-1">
+                <div className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500 mt-1">
                   <Clock size={12} /> {post.date}
                 </div>
               </div>

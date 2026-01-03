@@ -4,7 +4,7 @@ import { Facebook, Twitter, Youtube, Instagram, Mail } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0f172a] text-gray-300 mt-16">
+    <footer className="bg-[#0f172a] dark:bg-gray-900 text-gray-300 dark:text-gray-400 mt-16 border-t dark:border-gray-800">
       {/* Top */}
       <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
         {/* Brand */}
@@ -84,7 +84,7 @@ export default function Footer() {
             <input
               type="email"
               placeholder="Your email"
-              className="w-full px-3 py-2 text-sm text-gray-900 outline-none"
+              className="w-full px-3 py-2 text-sm text-gray-900 dark:text-gray-100 dark:bg-gray-800 dark:border dark:border-gray-700 outline-none"
             />
             <button
               type="submit"

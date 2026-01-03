@@ -1,7 +1,7 @@
 export default function FollowUs() {
   return (
-    <div className="border">
-      <h4 className="font-bold text-sm px-4 py-3 border-b uppercase">
+    <div className="border dark:border-gray-700 bg-white dark:bg-gray-800">
+      <h4 className="font-bold text-sm px-4 py-3 border-b dark:border-gray-700 uppercase text-gray-900 dark:text-gray-100">
         Follow Us
       </h4>
       <div className="grid grid-cols-2 text-white text-sm font-semibold">

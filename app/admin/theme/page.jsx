@@ -34,15 +34,21 @@ export default function Theme() {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Theme Settings</h1>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">Theme Settings</h1>
+        <p className="text-sm text-gray-500 mt-1">Customize your site theme and appearance</p>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Primary Color */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Primary Color
-          </h2>
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1 h-8 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Primary Color
+            </h2>
+          </div>
           <div className="space-y-4">
             <div className="flex items-center gap-4">
               <input
@@ -80,10 +86,13 @@ export default function Theme() {
         </div>
 
         {/* Font Family */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Font Family
-          </h2>
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1 h-8 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Font Family
+            </h2>
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {fontOptions.map((font) => (
               <button
@@ -104,10 +113,13 @@ export default function Theme() {
         </div>
 
         {/* Layout Options */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Layout Style
-          </h2>
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1 h-8 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Layout Style
+            </h2>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {["default", "compact", "wide"].map((layout) => (
               <button
@@ -132,8 +144,11 @@ export default function Theme() {
         </div>
 
         {/* Preview */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Preview</h2>
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1 h-8 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
+            <h2 className="text-2xl font-bold text-gray-900">Preview</h2>
+          </div>
           <div
             className="p-6 rounded-lg border-2 border-gray-200"
             style={{
@@ -168,10 +183,10 @@ export default function Theme() {
         </div>
 
         {/* Save Button */}
-        <div className="flex justify-end">
+        <div className="flex justify-end pt-4">
           <button
             type="submit"
-            className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-8 py-3 rounded-xl hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/25 hover:shadow-xl hover:shadow-red-500/30 transition-all duration-200 font-semibold"
           >
             Save Theme
           </button>

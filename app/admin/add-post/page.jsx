@@ -126,7 +126,7 @@ export default function AddPost() {
             value={block.content}
             onChange={(e) => updateBlock(block.id, "content", e.target.value)}
             rows={4}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm"
             placeholder="Enter text content..."
           />
         );
@@ -172,7 +172,7 @@ export default function AddPost() {
               type="text"
               value={block.alt || ""}
               onChange={(e) => updateBlock(block.id, "alt", e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm"
               placeholder="Image alt text (optional)"
             />
           </div>
@@ -240,19 +240,25 @@ export default function AddPost() {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Add New Post</h1>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">Add New Post</h1>
+        <p className="text-sm text-gray-500 mt-1">Create and customize your blog post</p>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Info */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Basic Information
-          </h2>
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1 h-8 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Basic Information
+            </h2>
+          </div>
           <div className="space-y-4">
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Post Title
               </label>
               <input
@@ -260,7 +266,7 @@ export default function AddPost() {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm"
                 placeholder="Enter post title"
                 required
               />
@@ -268,14 +274,14 @@ export default function AddPost() {
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Category
               </label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm bg-white"
                 required
               >
                 <option value="">Select category</option>
@@ -288,11 +294,11 @@ export default function AddPost() {
 
             {/* Featured Image */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Featured Image
               </label>
               <div className="flex items-center gap-4">
-                <div className="w-32 h-24 relative border border-gray-300 rounded-lg overflow-hidden">
+                <div className="w-40 h-28 relative border-2 border-gray-200 rounded-xl overflow-hidden shadow-md ring-1 ring-gray-100">
                   <Image
                     src={formData.featuredImage}
                     alt="Preview"
@@ -306,29 +312,29 @@ export default function AddPost() {
                     name="featuredImage"
                     value={formData.featuredImage}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm"
                     placeholder="Image URL or path"
                   />
                 </div>
                 <button
                   type="button"
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="px-6 py-3 bg-gradient-to-r from-gray-100 to-gray-50 border-2 border-gray-200 rounded-xl hover:from-gray-200 hover:to-gray-100 font-medium transition shadow-sm"
                 >
-                  Upload Image
+                  Upload
                 </button>
               </div>
             </div>
 
             {/* Status */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Status
               </label>
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm bg-white"
               >
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
@@ -338,12 +344,15 @@ export default function AddPost() {
         </div>
 
         {/* Content Blocks */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900">
-              Content Blocks
-            </h2>
-            <div className="flex items-center gap-2">
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-8 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Content Blocks
+              </h2>
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
               {blockTypes.map((blockType) => {
                 const Icon = blockType.icon;
                 return (
@@ -351,10 +360,10 @@ export default function AddPost() {
                     key={blockType.type}
                     type="button"
                     onClick={() => addBlock(blockType.type)}
-                    className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-gray-50 to-white border-2 border-gray-200 rounded-xl hover:from-red-50 hover:to-red-50 hover:border-red-300 text-sm font-medium transition shadow-sm"
                     title={blockType.label}
                   >
-                    <Icon size={16} />
+                    <Icon size={18} />
                     <span className="hidden md:inline">{blockType.label}</span>
                   </button>
                 );
@@ -363,9 +372,12 @@ export default function AddPost() {
           </div>
 
           {contentBlocks.length === 0 ? (
-            <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
-              <p className="text-gray-500 mb-4">
-                No content blocks yet. Add your first block above.
+            <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-2xl bg-gradient-to-br from-gray-50 to-white">
+              <p className="text-gray-500 mb-2 font-medium">
+                No content blocks yet
+              </p>
+              <p className="text-sm text-gray-400">
+                Add your first block using the buttons above
               </p>
             </div>
           ) : (
@@ -376,25 +388,27 @@ export default function AddPost() {
                 return (
                   <div
                     key={block.id}
-                    className="border border-gray-300 rounded-lg p-4 hover:border-gray-400 transition"
+                    className="border-2 border-gray-200 rounded-xl p-5 hover:border-red-300 hover:shadow-md transition bg-gradient-to-br from-white to-gray-50/50"
                   >
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
                       <div className="flex items-center gap-3">
                         <GripVertical
                           size={20}
-                          className="text-gray-400 cursor-move"
+                          className="text-gray-400 cursor-move hover:text-gray-600"
                         />
-                        <BlockIcon size={18} className="text-gray-600" />
-                        <span className="text-sm font-medium text-gray-700 capitalize">
+                        <div className="p-2 bg-gradient-to-br from-red-50 to-red-100 rounded-lg">
+                          <BlockIcon size={18} className="text-red-600" />
+                        </div>
+                        <span className="text-sm font-semibold text-gray-700 capitalize">
                           {block.type}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
                         <button
                           type="button"
                           onClick={() => moveBlock(index, "up")}
                           disabled={index === 0}
-                          className="p-1 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition"
                           title="Move up"
                         >
                           ↑
@@ -403,7 +417,7 @@ export default function AddPost() {
                           type="button"
                           onClick={() => moveBlock(index, "down")}
                           disabled={index === contentBlocks.length - 1}
-                          className="p-1 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition"
                           title="Move down"
                         >
                           ↓
@@ -411,10 +425,10 @@ export default function AddPost() {
                         <button
                           type="button"
                           onClick={() => deleteBlock(block.id)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded"
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
                           title="Delete block"
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={18} />
                         </button>
                       </div>
                     </div>
@@ -427,16 +441,16 @@ export default function AddPost() {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-4 pt-4">
+        <div className="flex items-center gap-4 pt-6 border-t border-gray-200">
           <button
             type="submit"
-            className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-8 py-3 rounded-xl hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/25 hover:shadow-xl hover:shadow-red-500/30 transition-all duration-200 font-semibold"
           >
             Save Post
           </button>
           <button
             type="button"
-            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            className="px-8 py-3 border-2 border-gray-200 rounded-xl hover:bg-gray-50 font-medium transition shadow-sm"
           >
             Cancel
           </button>
