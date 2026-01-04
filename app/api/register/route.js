@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import User from '@/models/User';
+import { NextResponse } from "next/server";
+import { connectDB } from "../../../lib/moongoose";
+import User from "@/models/User";
 
 export async function POST(request) {
   try {
@@ -9,14 +9,14 @@ export async function POST(request) {
     // Validate input
     if (!name || !email || !password) {
       return NextResponse.json(
-        { error: 'Please provide all required fields' },
+        { error: "Please provide all required fields" },
         { status: 400 }
       );
     }
 
     if (password.length < 6) {
       return NextResponse.json(
-        { error: 'Password must be at least 6 characters' },
+        { error: "Password must be at least 6 characters" },
         { status: 400 }
       );
     }
@@ -28,7 +28,7 @@ export async function POST(request) {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
-        { error: 'User with this email already exists' },
+        { error: "User with this email already exists" },
         { status: 400 }
       );
     }
@@ -43,7 +43,7 @@ export async function POST(request) {
     // Return user data (without password)
     return NextResponse.json(
       {
-        message: 'User registered successfully',
+        message: "User registered successfully",
         user: {
           id: user._id,
           name: user.name,
@@ -53,27 +53,32 @@ export async function POST(request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Registration error:', error);
-    
+    console.error("Registration error:", error);
+
     // Provide more specific error messages
-    if (error.name === 'MongoServerError' && error.code === 8000) {
+    if (error.name === "MongoServerError" && error.code === 8000) {
       return NextResponse.json(
-        { error: 'MongoDB authentication failed. Please check your connection string and credentials.' },
+        {
+          error:
+            "MongoDB authentication failed. Please check your connection string and credentials.",
+        },
         { status: 500 }
       );
     }
-    
-    if (error.name === 'MongoNetworkError') {
+
+    if (error.name === "MongoNetworkError") {
       return NextResponse.json(
-        { error: 'Cannot connect to MongoDB. Please check your connection string.' },
+        {
+          error:
+            "Cannot connect to MongoDB. Please check your connection string.",
+        },
         { status: 500 }
       );
     }
-    
+
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: error.message || "Internal server error" },
       { status: 500 }
     );
   }
 }
-
