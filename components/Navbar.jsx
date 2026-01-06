@@ -17,6 +17,7 @@ import {
   X,
   User,
   LogOut,
+  Edit,
 } from "lucide-react";
 import Image from "next/image";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -73,6 +74,14 @@ export default function Navbar() {
       router.refresh();
     } catch (error) {
       console.error("Logout failed:", error);
+    }
+  };
+
+  const handleWritePost = () => {
+    if (user) {
+      router.push("/admin/add-post");
+    } else {
+      router.push("/login");
     }
   };
 
@@ -181,6 +190,13 @@ export default function Navbar() {
           </ul>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={handleWritePost}
+              className="text-white px-4 py-2 hover:bg-red-500 transition flex items-center gap-2"
+            >
+              <Edit size={18} />
+              <span className="hidden lg:inline">Write a Post</span>
+            </button>
             {!loading && (
               <>
                 {user ? (
@@ -244,6 +260,13 @@ export default function Navbar() {
         {/* Mobile Menu */}
         {open && (
           <div className="md:hidden bg-[#0f172a] dark:bg-gray-900 text-white px-4 py-4 space-y-4">
+            <button
+              onClick={handleWritePost}
+              className="block py-2 border-b border-white/10 text-white hover:text-red-500 font-semibold w-full text-left flex items-center gap-2"
+            >
+              <Edit size={18} />
+              Write a Post
+            </button>
             {!loading && (
               <>
                 {user ? (

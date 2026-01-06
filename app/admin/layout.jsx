@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -10,11 +10,30 @@ import {
   Palette,
   Menu,
   X,
+  Users,
+  Shield,
 } from "lucide-react";
 
 export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [user, setUser] = useState(null);
   const pathname = usePathname();
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    try {
+      const response = await fetch("/api/auth/me");
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+      }
+    } catch (error) {
+      console.error("Auth check failed:", error);
+    }
+  };
 
   const menuItems = [
     {
@@ -39,6 +58,19 @@ export default function AdminLayout({ children }) {
     },
   ];
 
+  const superadminMenuItems = [
+    {
+      name: "All Users",
+      href: "/admin/superadmin/users",
+      icon: Users,
+    },
+    {
+      name: "All Posts",
+      href: "/admin/superadmin/posts",
+      icon: FileText,
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
       {/* Sidebar */}
@@ -53,7 +85,7 @@ export default function AdminLayout({ children }) {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                  Admin Panel
+                  Dashboard
                 </h1>
                 <p className="text-xs text-slate-400 mt-1">Content Management</p>
               </div>
@@ -92,6 +124,42 @@ export default function AdminLayout({ children }) {
                 </Link>
               );
             })}
+
+            {/* Superadmin Section */}
+            {user?.role === "superadmin" && (
+              <>
+                <div className="pt-4 mt-4 border-t border-slate-700/50">
+                  <div className="px-4 py-2 flex items-center gap-2 text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                    <Shield size={14} />
+                    System Management
+                  </div>
+                </div>
+                {superadminMenuItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                        isActive
+                          ? "bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-500/30"
+                          : "text-slate-300 hover:bg-slate-700/50 hover:text-white"
+                      }`}
+                    >
+                      <Icon
+                        size={20}
+                        className={isActive ? "text-white" : "text-slate-400 group-hover:text-white"}
+                      />
+                      <span className="font-medium">{item.name}</span>
+                      {isActive && (
+                        <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white"></div>
+                      )}
+                    </Link>
+                  );
+                })}
+              </>
+            )}
           </nav>
 
           {/* Footer */}

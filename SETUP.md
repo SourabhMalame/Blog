@@ -44,3 +44,4 @@ JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 
 - `/login` - Login page
 - `/register` - Registration page
+

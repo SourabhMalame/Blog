@@ -33,11 +33,12 @@ export async function POST(request) {
       );
     }
 
-    // Create new user
+    // Create new user - always as regular user (superadmin can only be created by developer)
     const user = await User.create({
       name,
       email,
       password,
+      role: "user", // Explicitly set to user, never superadmin
     });
 
     // Return user data (without password)
