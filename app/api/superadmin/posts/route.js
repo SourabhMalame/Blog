@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "../../../../../lib/moongoose";
+// import { connectDB } from "../../../../../lib/moongoose";
 import Post from "@/models/Post";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
@@ -16,13 +16,16 @@ async function checkSuperAdmin(request) {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    await connectDB();
+    // await connectDB();
     const user = await User.findById(decoded.userId).select("-password");
-    
+
     if (!user || user.role !== "superadmin") {
-      return { error: "Unauthorized - Superadmin access required", status: 403 };
+      return {
+        error: "Unauthorized - Superadmin access required",
+        status: 403,
+      };
     }
-    
+
     return { user };
   } catch (error) {
     return { error: "Not authenticated", status: 401 };
@@ -33,7 +36,10 @@ async function checkSuperAdmin(request) {
 export async function GET(request) {
   const authCheck = await checkSuperAdmin(request);
   if (authCheck.error) {
-    return NextResponse.json({ error: authCheck.error }, { status: authCheck.status });
+    return NextResponse.json(
+      { error: authCheck.error },
+      { status: authCheck.status }
+    );
   }
 
   try {
@@ -41,11 +47,14 @@ export async function GET(request) {
     const posts = await Post.find({})
       .populate("author", "name email")
       .sort({ createdAt: -1 });
-    
+
     return NextResponse.json({ posts });
   } catch (error) {
     console.error("Error fetching posts:", error);
-    return NextResponse.json({ error: "Failed to fetch posts" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch posts" },
+      { status: 500 }
+    );
   }
 }
 
@@ -53,7 +62,10 @@ export async function GET(request) {
 export async function PUT(request) {
   const authCheck = await checkSuperAdmin(request);
   if (authCheck.error) {
-    return NextResponse.json({ error: authCheck.error }, { status: authCheck.status });
+    return NextResponse.json(
+      { error: authCheck.error },
+      { status: authCheck.status }
+    );
   }
 
   try {
@@ -61,7 +73,7 @@ export async function PUT(request) {
     const { postId, title, category, status, autoShareEnabled } = body;
 
     await connectDB();
-    
+
     const updateData = {};
     if (title !== undefined) updateData.title = title;
     if (category !== undefined) updateData.category = category;
@@ -71,7 +83,8 @@ export async function PUT(request) {
         updateData.publishedAt = new Date();
       }
     }
-    if (autoShareEnabled !== undefined) updateData.autoShareEnabled = autoShareEnabled;
+    if (autoShareEnabled !== undefined)
+      updateData.autoShareEnabled = autoShareEnabled;
 
     const post = await Post.findByIdAndUpdate(
       postId,
@@ -86,7 +99,10 @@ export async function PUT(request) {
     return NextResponse.json({ post, message: "Post updated successfully" });
   } catch (error) {
     console.error("Error updating post:", error);
-    return NextResponse.json({ error: "Failed to update post" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update post" },
+      { status: 500 }
+    );
   }
 }
 
@@ -94,7 +110,10 @@ export async function PUT(request) {
 export async function DELETE(request) {
   const authCheck = await checkSuperAdmin(request);
   if (authCheck.error) {
-    return NextResponse.json({ error: authCheck.error }, { status: authCheck.status });
+    return NextResponse.json(
+      { error: authCheck.error },
+      { status: authCheck.status }
+    );
   }
 
   try {
@@ -107,11 +126,13 @@ export async function DELETE(request) {
 
     await connectDB();
     await Post.findByIdAndDelete(postId);
-    
+
     return NextResponse.json({ message: "Post deleted successfully" });
   } catch (error) {
     console.error("Error deleting post:", error);
-    return NextResponse.json({ error: "Failed to delete post" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete post" },
+      { status: 500 }
+    );
   }
 }
-
