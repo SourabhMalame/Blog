@@ -9,10 +9,6 @@ const poppins = Poppins({
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-});
 
 export const metadata = {
   title: "MSO - Maharashtra Startup Organistation",
@@ -23,7 +19,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={poppins.variable} suppressHydrationWarning>
-      <body className={`${geistMono.variable} antialiased`}>
+      <body>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
