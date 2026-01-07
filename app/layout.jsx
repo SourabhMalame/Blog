@@ -9,7 +9,6 @@ const poppins = Poppins({
   display: "swap",
 });
 
-
 export const metadata = {
   title: "MSO - Maharashtra Startup Organistation",
   description:
@@ -18,7 +17,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={poppins.variable} suppressHydrationWarning>
+    <html lang="en" className="--font-poppins" suppressHydrationWarning>
       <body>
         <ThemeProvider>{children}</ThemeProvider>
       </body>

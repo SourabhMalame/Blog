@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ensureConnected } from "../../../../../../lib/moongoose";
+import { ensureConnected } from "@/lib/moongoose";
 import User from "@/models/User";
 import Post from "@/models/Post";
 import jwt from "jsonwebtoken";
