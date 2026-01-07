@@ -3,8 +3,7 @@ import { ensureConnected } from "@/lib/moongoose";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET =
-  process.env.JWT_SECRET || "your-secret-key-change-in-production";
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
 export async function GET(request) {
   try {
