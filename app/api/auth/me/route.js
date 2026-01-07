@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ensureConnected } from "../../../../lib/moongoose";
+import { ensureConnected } from "@/lib/moongoose";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 
@@ -31,7 +31,7 @@ export async function GET(request) {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role || 'user',
+        role: user.role || "user",
         autoShareEnabled: user.autoShareEnabled || false,
         socialMediaSettings: user.socialMediaSettings || {
           facebook: false,
@@ -47,4 +47,3 @@ export async function GET(request) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 }
-
