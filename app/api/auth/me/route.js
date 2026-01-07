@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "../../../../lib/moongoose";
+import { ensureConnected } from "../../../../lib/moongoose";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 
@@ -17,8 +17,8 @@ export async function GET(request) {
     // Verify token
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    // Connect to database
-    await connectDB();
+    // Ensure database is connected (connection should already exist from login)
+    await ensureConnected();
 
     // Get user
     const user = await User.findById(decoded.userId).select("-password");

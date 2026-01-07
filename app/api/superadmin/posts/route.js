@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-// import { connectDB } from "../../../../../lib/moongoose";
+import { ensureConnected } from "../../../../../lib/moongoose";
 import Post from "@/models/Post";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
@@ -15,8 +15,8 @@ async function checkSuperAdmin(request) {
   }
 
   try {
+    await ensureConnected(); // Connection should already exist from login
     const decoded = jwt.verify(token, JWT_SECRET);
-    // await connectDB();
     const user = await User.findById(decoded.userId).select("-password");
 
     if (!user || user.role !== "superadmin") {
@@ -43,7 +43,7 @@ export async function GET(request) {
   }
 
   try {
-    await connectDB();
+    await ensureConnected(); // Connection should already exist from login
     const posts = await Post.find({})
       .populate("author", "name email")
       .sort({ createdAt: -1 });
@@ -72,7 +72,7 @@ export async function PUT(request) {
     const body = await request.json();
     const { postId, title, category, status, autoShareEnabled } = body;
 
-    await connectDB();
+    await ensureConnected(); // Connection should already exist from login
 
     const updateData = {};
     if (title !== undefined) updateData.title = title;
@@ -124,7 +124,7 @@ export async function DELETE(request) {
       return NextResponse.json({ error: "Post ID required" }, { status: 400 });
     }
 
-    await connectDB();
+    await ensureConnected(); // Connection should already exist from login
     await Post.findByIdAndDelete(postId);
 
     return NextResponse.json({ message: "Post deleted successfully" });

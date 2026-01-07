@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-// import { connectDB } from "../../../../../lib/moongoose";
+import { ensureConnected } from "../../../../../lib/moongoose";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 
@@ -16,7 +16,7 @@ export async function POST(request) {
 
     // Check if using secret key (for initial setup)
     if (secret && secret === SUPERADMIN_SECRET) {
-      // await connectDB();
+      await ensureConnected(); // May need to connect if called before login
       const user = await User.findOneAndUpdate(
         { email },
         { role: "superadmin" },
@@ -40,7 +40,7 @@ export async function POST(request) {
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    await connectDB();
+    await ensureConnected(); // Connection should already exist from login
     const requester = await User.findById(decoded.userId).select("-password");
 
     if (!requester || requester.role !== "superadmin") {

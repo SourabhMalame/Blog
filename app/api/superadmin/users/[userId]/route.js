@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "../../../../../../lib/moongoose";
+import { ensureConnected } from "../../../../../../lib/moongoose";
 import User from "@/models/User";
 import Post from "@/models/Post";
 import jwt from "jsonwebtoken";
@@ -15,7 +15,7 @@ async function checkSuperAdmin(request) {
   }
 
   try {
-    await connectDB();
+    await ensureConnected(); // Connection should already exist from login
     const decoded = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(decoded.userId).select("-password");
 
@@ -43,7 +43,7 @@ export async function GET(request, { params }) {
   }
 
   try {
-    await connectDB();
+    await ensureConnected(); // Connection should already exist from login
     const { userId } = params;
 
     const user = await User.findById(userId).select("-password");
@@ -77,7 +77,7 @@ export async function PUT(request, { params }) {
   }
 
   try {
-    await connectDB();
+    await ensureConnected(); // Connection should already exist from login
     const { userId } = params;
     const body = await request.json();
     const { socialMediaSettings, autoShareEnabled } = body;

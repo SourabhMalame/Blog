@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-// import { connectDB } from "../../../../../lib/moongoose";
+import { ensureConnected } from "../../../../../lib/moongoose";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 
@@ -14,7 +14,7 @@ async function checkSuperAdmin(request) {
   }
 
   try {
-    // await connectDB();
+    await ensureConnected(); // Connection should already exist from login
     const decoded = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(decoded.userId).select("-password");
 
@@ -42,7 +42,7 @@ export async function GET(request) {
   }
 
   try {
-    await connectDB();
+    await ensureConnected(); // Connection should already exist from login
     const users = await User.find({})
       .select("-password")
       .sort({ createdAt: -1 });
@@ -72,7 +72,7 @@ export async function PUT(request) {
     const { userId, name, email, role, autoShareEnabled, socialMediaSettings } =
       body;
 
-    await connectDB();
+    await ensureConnected(); // Connection should already exist from login
 
     const updateData = {};
     if (name !== undefined) updateData.name = name;
@@ -122,7 +122,7 @@ export async function DELETE(request) {
       return NextResponse.json({ error: "User ID required" }, { status: 400 });
     }
 
-    await connectDB();
+    await ensureConnected(); // Connection should already exist from login
 
     // Prevent deleting yourself
     const token = request.cookies.get("token")?.value;

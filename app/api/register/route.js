@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "../../../lib/moongoose";
 import User from "@/models/User";
+// Register needs to connect as it can be called before login
 
 export async function POST(request) {
   try {
