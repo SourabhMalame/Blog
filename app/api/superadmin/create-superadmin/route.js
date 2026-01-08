@@ -3,9 +3,14 @@ import { ensureConnected } from "@/lib/moongoose";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET =
-  process.env.JWT_SECRET || "your-secret-key-change-in-production";
-const ADMIN_SECRET = process.env.ADMIN_SECRET || "admin-secret-key";
+// Next.js: Get env vars at runtime
+function getJWTSecret() {
+  return process.env.JWT_SECRET || "your-secret-key-change-in-production";
+}
+
+function getAdminSecret() {
+  return process.env.ADMIN_SECRET || "admin-secret-key";
+}
 
 // Create or promote user to ADMIN
 // Can be accessed via secret key or by existing ADMIN
@@ -14,6 +19,7 @@ export async function POST(request) {
     const { email, secret } = await request.json();
 
     // Check if using secret key (for initial setup)
+    const ADMIN_SECRET = getAdminSecret();
     if (secret && secret === ADMIN_SECRET) {
       await ensureConnected(); // May need to connect if called before login
       const user = await User.findOneAndUpdate(
@@ -38,6 +44,7 @@ export async function POST(request) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
+    const JWT_SECRET = getJWTSecret();
     const decoded = jwt.verify(token, JWT_SECRET);
     await ensureConnected(); // Connection should already exist from login
     const requester = await User.findById(decoded.userId).select("-password");

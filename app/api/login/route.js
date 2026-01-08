@@ -4,9 +4,13 @@ import User from "@/models/User";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
-if (!JWT_SECRET) {
-  throw new Error("❌ JWT_SECRET is not defined");
+// Next.js: Get env vars at runtime inside the function, not at module level
+function getJWTSecret() {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("❌ JWT_SECRET is not defined. Please set it in your environment variables");
+  }
+  return secret;
 }
 
 export async function POST(request) {
@@ -40,6 +44,7 @@ export async function POST(request) {
       );
     }
 
+    const JWT_SECRET = getJWTSecret();
     const token = jwt.sign({ userId: user._id.toString() }, JWT_SECRET, {
       expiresIn: "7d",
     });

@@ -3,8 +3,10 @@ import { ensureConnected } from "@/lib/moongoose";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET =
-  process.env.JWT_SECRET || "your-secret-key-change-in-production";
+// Next.js: Get env vars at runtime
+function getJWTSecret() {
+  return process.env.JWT_SECRET || "your-secret-key-change-in-production";
+}
 
 // Middleware to check if user is ADMIN
 async function checkAdmin(request) {
@@ -15,6 +17,7 @@ async function checkAdmin(request) {
 
   try {
     await ensureConnected(); // Connection should already exist from login
+    const JWT_SECRET = getJWTSecret();
     const decoded = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(decoded.userId).select("-password");
 
@@ -140,6 +143,7 @@ export async function DELETE(request) {
 
     // Prevent deleting yourself
     const token = request.cookies.get("token")?.value;
+    const JWT_SECRET = getJWTSecret();
     const decoded = jwt.verify(token, JWT_SECRET);
     if (decoded.userId === userId) {
       return NextResponse.json(

@@ -3,7 +3,10 @@ import { ensureConnected } from "@/lib/moongoose";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+// Next.js: Get env vars at runtime
+function getJWTSecret() {
+  return process.env.JWT_SECRET || "your-secret-key";
+}
 
 export async function GET(request) {
   try {
@@ -14,6 +17,7 @@ export async function GET(request) {
     }
 
     // Verify token
+    const JWT_SECRET = getJWTSecret();
     const decoded = jwt.verify(token, JWT_SECRET);
 
     // Ensure database is connected (connection should already exist from login)
