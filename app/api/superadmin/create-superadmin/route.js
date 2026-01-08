@@ -5,21 +5,20 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET =
   process.env.JWT_SECRET || "your-secret-key-change-in-production";
-const SUPERADMIN_SECRET =
-  process.env.SUPERADMIN_SECRET || "superadmin-secret-key";
+const ADMIN_SECRET = process.env.ADMIN_SECRET || "admin-secret-key";
 
-// Create or promote user to superadmin
-// Can be accessed via secret key or by existing superadmin
+// Create or promote user to ADMIN
+// Can be accessed via secret key or by existing ADMIN
 export async function POST(request) {
   try {
     const { email, secret } = await request.json();
 
     // Check if using secret key (for initial setup)
-    if (secret && secret === SUPERADMIN_SECRET) {
+    if (secret && secret === ADMIN_SECRET) {
       await ensureConnected(); // May need to connect if called before login
       const user = await User.findOneAndUpdate(
         { email },
-        { role: "superadmin" },
+        { role: "ADMIN" },
         { new: true }
       ).select("-password");
 
@@ -28,12 +27,12 @@ export async function POST(request) {
       }
 
       return NextResponse.json({
-        message: "User promoted to superadmin successfully",
+        message: "User promoted to ADMIN successfully",
         user,
       });
     }
 
-    // Otherwise, check if requester is superadmin
+    // Otherwise, check if requester is ADMIN
     const token = request.cookies.get("token")?.value;
     if (!token) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
@@ -43,16 +42,16 @@ export async function POST(request) {
     await ensureConnected(); // Connection should already exist from login
     const requester = await User.findById(decoded.userId).select("-password");
 
-    if (!requester || requester.role !== "superadmin") {
+    if (!requester || requester.role !== "ADMIN") {
       return NextResponse.json(
-        { error: "Unauthorized - Superadmin access required" },
+        { error: "Unauthorized - Admin access required" },
         { status: 403 }
       );
     }
 
     const user = await User.findOneAndUpdate(
       { email },
-      { role: "superadmin" },
+      { role: "ADMIN" },
       { new: true }
     ).select("-password");
 
@@ -61,13 +60,13 @@ export async function POST(request) {
     }
 
     return NextResponse.json({
-      message: "User promoted to superadmin successfully",
+      message: "User promoted to ADMIN successfully",
       user,
     });
   } catch (error) {
-    console.error("Error creating superadmin:", error);
+    console.error("Error creating admin:", error);
     return NextResponse.json(
-      { error: "Failed to create superadmin" },
+      { error: "Failed to create admin" },
       { status: 500 }
     );
   }

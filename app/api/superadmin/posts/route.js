@@ -7,8 +7,8 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET =
   process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
-// Middleware to check if user is superadmin
-async function checkSuperAdmin(request) {
+// Middleware to check if user is ADMIN
+async function checkAdmin(request) {
   const token = request.cookies.get("token")?.value;
   if (!token) {
     return { error: "Not authenticated", status: 401 };
@@ -19,9 +19,9 @@ async function checkSuperAdmin(request) {
     const decoded = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(decoded.userId).select("-password");
 
-    if (!user || user.role !== "superadmin") {
+    if (!user || user.role !== "ADMIN") {
       return {
-        error: "Unauthorized - Superadmin access required",
+        error: "Unauthorized - Admin access required",
         status: 403,
       };
     }
@@ -34,7 +34,7 @@ async function checkSuperAdmin(request) {
 
 // Get all posts
 export async function GET(request) {
-  const authCheck = await checkSuperAdmin(request);
+  const authCheck = await checkAdmin(request);
   if (authCheck.error) {
     return NextResponse.json(
       { error: authCheck.error },
@@ -60,7 +60,7 @@ export async function GET(request) {
 
 // Update post
 export async function PUT(request) {
-  const authCheck = await checkSuperAdmin(request);
+  const authCheck = await checkAdmin(request);
   if (authCheck.error) {
     return NextResponse.json(
       { error: authCheck.error },
@@ -108,7 +108,7 @@ export async function PUT(request) {
 
 // Delete post
 export async function DELETE(request) {
-  const authCheck = await checkSuperAdmin(request);
+  const authCheck = await checkAdmin(request);
   if (authCheck.error) {
     return NextResponse.json(
       { error: authCheck.error },

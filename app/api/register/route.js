@@ -5,6 +5,7 @@ import User from "@/models/User";
 
 export async function POST(request) {
   try {
+    // Extract only name, email, password - ignore any role passed in request
     const { name, email, password } = await request.json();
 
     // Validate input
@@ -34,12 +35,14 @@ export async function POST(request) {
       );
     }
 
-    // Create new user - always as regular user (superadmin can only be created by developer)
+    // Create new user - ALWAYS as NORMAL_USER
+    // ADMIN role can only be assigned via /api/superadmin/create-superadmin route
+    // We explicitly set role here to ensure it's always NORMAL_USER, even if someone tries to pass role in request
     const user = await User.create({
       name,
       email,
       password,
-      role: "user", // Explicitly set to user, never superadmin
+      role: "NORMAL_USER", // Force NORMAL_USER - registration NEVER creates admin users
     });
 
     // Return user data (without password)

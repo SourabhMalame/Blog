@@ -8,8 +8,8 @@ const UserSchema = new mongoose.Schema(
     password: { type: String, required: true },
     role: { 
       type: String, 
-      enum: ['user', 'superadmin'], 
-      default: 'user' 
+      enum: ['NORMAL_USER', 'ADMIN'], 
+      default: 'NORMAL_USER' 
     },
     autoShareEnabled: { 
       type: Boolean, 
@@ -26,10 +26,23 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// ✅ CORRECT pre-save hook (NO next)
+// Pre-save hook to hash password
 UserSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
+});
+
+// Pre-save hook to ensure role is always set to NORMAL_USER for new users
+// (unless explicitly set to ADMIN by authorized routes)
+UserSchema.pre("save", async function () {
+  // Only set default role if this is a new document and role is not already set
+  if (this.isNew && !this.role) {
+    this.role = "NORMAL_USER";
+  }
+  // Ensure role is valid enum value
+  if (this.role && !["NORMAL_USER", "ADMIN"].includes(this.role)) {
+    this.role = "NORMAL_USER";
+  }
 });
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);

@@ -45,10 +45,18 @@ export default function LoginPage() {
         return;
       }
 
-      // Redirect to home page on success
-      router.push("/");
+      // Redirect based on user role from backend
+      // Only ADMIN role goes to admin panel, all others (NORMAL_USER, etc.) go to user panel
+      const userRole = data.user?.role;
+      if (userRole === "ADMIN") {
+        router.push("/admin");
+      } else {
+        // All other users (NORMAL_USER or any other role) go to user panel
+        router.push("/user");
+      }
       router.refresh();
-    } catch (err) {
+    } catch (error) {
+      console.error("Login error:", error);
       setError("An error occurred. Please try again.");
       setLoading(false);
     }
@@ -137,5 +145,3 @@ export default function LoginPage() {
     </>
   );
 }
-
-

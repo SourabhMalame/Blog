@@ -6,8 +6,8 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET =
   process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
-// Middleware to check if user is superadmin
-async function checkSuperAdmin(request) {
+// Middleware to check if user is ADMIN
+async function checkAdmin(request) {
   const token = request.cookies.get("token")?.value;
   if (!token) {
     return { error: "Not authenticated", status: 401 };
@@ -18,9 +18,9 @@ async function checkSuperAdmin(request) {
     const decoded = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(decoded.userId).select("-password");
 
-    if (!user || user.role !== "superadmin") {
+    if (!user || user.role !== "ADMIN") {
       return {
-        error: "Unauthorized - Superadmin access required",
+        error: "Unauthorized - Admin access required",
         status: 403,
       };
     }
@@ -33,7 +33,7 @@ async function checkSuperAdmin(request) {
 
 // Get all users
 export async function GET(request) {
-  const authCheck = await checkSuperAdmin(request);
+  const authCheck = await checkAdmin(request);
   if (authCheck.error) {
     return NextResponse.json(
       { error: authCheck.error },
@@ -59,7 +59,7 @@ export async function GET(request) {
 
 // Update user
 export async function PUT(request) {
-  const authCheck = await checkSuperAdmin(request);
+  const authCheck = await checkAdmin(request);
   if (authCheck.error) {
     return NextResponse.json(
       { error: authCheck.error },
@@ -77,8 +77,22 @@ export async function PUT(request) {
     const updateData = {};
     if (name !== undefined) updateData.name = name;
     if (email !== undefined) updateData.email = email;
-    // Prevent changing role to superadmin via API (only developer can create superadmin)
-    if (role !== undefined && role !== "superadmin") updateData.role = role;
+    // Only allow role changes to NORMAL_USER via this API
+    // ADMIN role can only be set via /api/superadmin/create-superadmin route
+    if (role !== undefined) {
+      if (role === "NORMAL_USER") {
+        updateData.role = "NORMAL_USER";
+      } else if (role === "ADMIN") {
+        // Prevent setting ADMIN role via this route - use create-superadmin route instead
+        return NextResponse.json(
+          { error: "Cannot set ADMIN role via this route. Use /api/superadmin/create-superadmin instead." },
+          { status: 403 }
+        );
+      } else {
+        // Invalid role - default to NORMAL_USER
+        updateData.role = "NORMAL_USER";
+      }
+    }
     if (autoShareEnabled !== undefined)
       updateData.autoShareEnabled = autoShareEnabled;
     if (socialMediaSettings !== undefined)
@@ -106,7 +120,7 @@ export async function PUT(request) {
 
 // Delete user
 export async function DELETE(request) {
-  const authCheck = await checkSuperAdmin(request);
+  const authCheck = await checkAdmin(request);
   if (authCheck.error) {
     return NextResponse.json(
       { error: authCheck.error },

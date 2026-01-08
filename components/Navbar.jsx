@@ -79,7 +79,11 @@ export default function Navbar() {
 
   const handleWritePost = () => {
     if (user) {
-      router.push("/admin/add-post");
+      if (user.role === "ADMIN") {
+        router.push("/admin/add-post");
+      } else {
+        router.push("/user/create-post");
+      }
     } else {
       router.push("/login");
     }
@@ -218,11 +222,11 @@ export default function Navbar() {
                           <p className="text-gray-400 text-xs">{user.email}</p>
                         </div>
                         <Link
-                          href="/admin"
+                          href={user.role === "ADMIN" ? "/admin" : "/user"}
                           className="block px-4 py-3 text-white hover:bg-[#1f2937] text-sm"
                           onClick={() => setUserMenuOpen(false)}
                         >
-                          Dashboard
+                          {user.role === "ADMIN" ? "Admin Panel" : "User Panel"}
                         </Link>
                         <button
                           onClick={handleLogout}
@@ -276,10 +280,10 @@ export default function Navbar() {
                       <p className="text-gray-400 text-xs">{user.email}</p>
                     </div>
                     <Link
-                      href="/admin"
+                      href={user.role === "ADMIN" ? "/admin" : "/user"}
                       className="block py-2 border-b border-white/10"
                     >
-                      Dashboard
+                      {user.role === "ADMIN" ? "Admin Panel" : "User Panel"}
                     </Link>
                     <button
                       onClick={handleLogout}

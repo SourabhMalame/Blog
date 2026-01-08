@@ -30,7 +30,7 @@ export async function GET(request) {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role || "user",
+        role: user.role || "NORMAL_USER",
         autoShareEnabled: user.autoShareEnabled || false,
         socialMediaSettings: user.socialMediaSettings || {
           facebook: false,
