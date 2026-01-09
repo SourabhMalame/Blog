@@ -5,13 +5,29 @@ import User from "@/models/User";
 
 export async function POST(request) {
   try {
-    // Extract only name, email, password - ignore any role passed in request
-    const { name, email, password } = await request.json();
+    // Extract registration data
+    const { 
+      name, 
+      email, 
+      password, 
+      accountType = 'individual',
+      organizationName,
+      organizationWebsite,
+      organizationDescription
+    } = await request.json();
 
     // Validate input
     if (!name || !email || !password) {
       return NextResponse.json(
         { error: "Please provide all required fields" },
+        { status: 400 }
+      );
+    }
+
+    // Validate organization fields if account type is organization
+    if (accountType === "organization" && !organizationName) {
+      return NextResponse.json(
+        { error: "Organization name is required for organization registration" },
         { status: 400 }
       );
     }
@@ -38,12 +54,22 @@ export async function POST(request) {
     // Create new user - ALWAYS as NORMAL_USER
     // ADMIN role can only be assigned via /api/superadmin/create-superadmin route
     // We explicitly set role here to ensure it's always NORMAL_USER, even if someone tries to pass role in request
-    const user = await User.create({
+    const userData = {
       name,
       email,
       password,
       role: "NORMAL_USER", // Force NORMAL_USER - registration NEVER creates admin users
-    });
+      accountType: accountType || 'individual',
+    };
+
+    // Add organization fields if account type is organization
+    if (accountType === "organization") {
+      userData.organizationName = organizationName;
+      if (organizationWebsite) userData.organizationWebsite = organizationWebsite;
+      if (organizationDescription) userData.organizationDescription = organizationDescription;
+    }
+
+    const user = await User.create(userData);
 
     // Return user data (without password)
     return NextResponse.json(

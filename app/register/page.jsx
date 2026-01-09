@@ -8,11 +8,15 @@ import Link from "next/link";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const [accountType, setAccountType] = useState("individual"); // 'individual' or 'organization'
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
+    organizationName: "",
+    organizationWebsite: "",
+    organizationDescription: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -54,6 +58,10 @@ export default function RegisterPage() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
+          accountType: accountType,
+          organizationName: accountType === "organization" ? formData.organizationName : null,
+          organizationWebsite: accountType === "organization" ? formData.organizationWebsite : null,
+          organizationDescription: accountType === "organization" ? formData.organizationDescription : null,
         }),
       });
 
@@ -93,20 +101,98 @@ export default function RegisterPage() {
           )}
 
           <form className="space-y-4" onSubmit={handleSubmit}>
+            {/* Account Type Selection */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Account Type
+              </label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="accountType"
+                    value="individual"
+                    checked={accountType === "individual"}
+                    onChange={(e) => setAccountType(e.target.value)}
+                    className="h-4 w-4 text-red-500 focus:ring-red-500"
+                  />
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Individual</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="accountType"
+                    value="organization"
+                    checked={accountType === "organization"}
+                    onChange={(e) => setAccountType(e.target.value)}
+                    className="h-4 w-4 text-red-500 focus:ring-red-500"
+                  />
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Organization</span>
+                </label>
+              </div>
+            </div>
+
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Full name
+                {accountType === "organization" ? "Contact Person Name" : "Full name"}
               </label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Jane Doe"
+                placeholder={accountType === "organization" ? "John Doe" : "Jane Doe"}
                 className="w-full rounded border dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
                 required
               />
             </div>
+
+            {accountType === "organization" && (
+              <>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Organization Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="organizationName"
+                    value={formData.organizationName}
+                    onChange={handleChange}
+                    placeholder="Maharashtra Startup Inc."
+                    className="w-full rounded border dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                    required={accountType === "organization"}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Organization Website
+                  </label>
+                  <input
+                    type="url"
+                    name="organizationWebsite"
+                    value={formData.organizationWebsite}
+                    onChange={handleChange}
+                    placeholder="https://example.com"
+                    className="w-full rounded border dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Organization Description
+                  </label>
+                  <textarea
+                    name="organizationDescription"
+                    value={formData.organizationDescription}
+                    onChange={handleChange}
+                    placeholder="Brief description of your organization..."
+                    rows={3}
+                    className="w-full rounded border dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+                  />
+                </div>
+              </>
+            )}
 
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">

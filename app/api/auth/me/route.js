@@ -35,6 +35,10 @@ export async function GET(request) {
         name: user.name,
         email: user.email,
         role: user.role || "NORMAL_USER",
+        accountType: user.accountType || "individual",
+        organizationName: user.organizationName || null,
+        organizationWebsite: user.organizationWebsite || null,
+        organizationDescription: user.organizationDescription || null,
         autoShareEnabled: user.autoShareEnabled || false,
         socialMediaSettings: user.socialMediaSettings || {
           facebook: false,

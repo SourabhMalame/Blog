@@ -191,6 +191,18 @@ export default function UserDetailPage() {
                 <span>{user.email}</span>
               </div>
               <div className="flex items-center gap-2">
+                <span className="text-xs font-medium px-2 py-1 rounded bg-gray-100">
+                  {user.accountType === "organization" ? "Organization" : "Individual"}
+                </span>
+              </div>
+              {user.accountType === "organization" && user.organizationName && (
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="text-sm font-semibold text-gray-700">
+                    {user.organizationName}
+                  </span>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
                 <Calendar size={16} />
                 <span>
                   Joined: {new Date(user.createdAt).toLocaleDateString()}
@@ -200,6 +212,48 @@ export default function UserDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Organization Information */}
+      {user.accountType === "organization" && (
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Organization Information
+          </h3>
+          <div className="space-y-4">
+            {user.organizationName && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Organization Name
+                </label>
+                <div className="text-gray-900 font-semibold">{user.organizationName}</div>
+              </div>
+            )}
+            {user.organizationWebsite && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Website
+                </label>
+                <a
+                  href={user.organizationWebsite}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  {user.organizationWebsite}
+                </a>
+              </div>
+            )}
+            {user.organizationDescription && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <div className="text-gray-700">{user.organizationDescription}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Auto-Share Toggle */}
       <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">

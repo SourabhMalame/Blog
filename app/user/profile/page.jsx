@@ -46,12 +46,65 @@ export default function UserProfile() {
       <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 space-y-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Name
+            Account Type
+          </label>
+          <div className="w-full rounded-lg border border-gray-300 px-4 py-2 bg-gray-50">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+              {user?.accountType === "organization" ? "Organization" : "Individual"}
+            </span>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            {user?.accountType === "organization" ? "Contact Person Name" : "Name"}
           </label>
           <div className="w-full rounded-lg border border-gray-300 px-4 py-2 bg-gray-50">
             {user?.name || "N/A"}
           </div>
         </div>
+
+        {user?.accountType === "organization" && user?.organizationName && (
+          <>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Organization Name
+              </label>
+              <div className="w-full rounded-lg border border-gray-300 px-4 py-2 bg-gray-50">
+                {user.organizationName}
+              </div>
+            </div>
+
+            {user.organizationWebsite && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Organization Website
+                </label>
+                <div className="w-full rounded-lg border border-gray-300 px-4 py-2 bg-gray-50">
+                  <a 
+                    href={user.organizationWebsite} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    {user.organizationWebsite}
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {user.organizationDescription && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Organization Description
+                </label>
+                <div className="w-full rounded-lg border border-gray-300 px-4 py-2 bg-gray-50 min-h-[80px]">
+                  {user.organizationDescription}
+                </div>
+              </div>
+            )}
+          </>
+        )}
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">

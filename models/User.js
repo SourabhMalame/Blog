@@ -11,6 +11,23 @@ const UserSchema = new mongoose.Schema(
       enum: ['NORMAL_USER', 'ADMIN'], 
       default: 'NORMAL_USER' 
     },
+    accountType: {
+      type: String,
+      enum: ['individual', 'organization'],
+      default: 'individual'
+    },
+    organizationName: {
+      type: String,
+      default: null
+    },
+    organizationWebsite: {
+      type: String,
+      default: null
+    },
+    organizationDescription: {
+      type: String,
+      default: null
+    },
     autoShareEnabled: { 
       type: Boolean, 
       default: false 
