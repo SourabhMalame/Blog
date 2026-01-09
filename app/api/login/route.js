@@ -26,8 +26,8 @@ export async function POST(request) {
 
     await connectDB();
 
-    // password must be selectable
-    const user = await User.findOne({ email }).select("+password");
+    // Find user - password is included by default in User model
+    const user = await User.findOne({ email });
     if (!user) {
       return NextResponse.json(
         { error: "Invalid email or password" },
@@ -35,7 +35,16 @@ export async function POST(request) {
       );
     }
 
-    // compare password correctly
+    // Check if user has password field
+    if (!user.password) {
+      console.error("User found but password field is missing");
+      return NextResponse.json(
+        { error: "Invalid email or password" },
+        { status: 401 }
+      );
+    }
+
+    // Compare password correctly
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return NextResponse.json(

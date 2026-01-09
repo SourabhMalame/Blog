@@ -47,7 +47,7 @@ export async function GET(request, { params }) {
 
   try {
     await ensureConnected(); // Connection should already exist from login
-    const { userId } = params;
+    const { userId } = await params;
 
     const user = await User.findById(userId).select("-password");
     if (!user) {
@@ -81,7 +81,7 @@ export async function PUT(request, { params }) {
 
   try {
     await ensureConnected(); // Connection should already exist from login
-    const { userId } = params;
+    const { userId } = await params;
     const body = await request.json();
     const { socialMediaSettings, autoShareEnabled } = body;
 

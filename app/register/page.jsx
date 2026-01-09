@@ -82,7 +82,7 @@ export default function RegisterPage() {
           <div className="space-y-2 text-center">
             <h1 className="text-2xl font-bold dark:text-white">Create Your Account</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Join NNBlog to get the latest posts and insights.
+              Join Maharashtra Startup Organisation to get the latest posts and insights.
             </p>
           </div>
 

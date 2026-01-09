@@ -41,12 +41,15 @@ export default function UserDetailPage() {
         setUser(data.user);
         setPosts(data.posts || []);
       } else {
-        alert("Failed to load user details");
+        const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+        console.error("Failed to load user details:", errorData);
+        alert(errorData.error || "Failed to load user details");
         router.push("/admin/users");
       }
     } catch (error) {
       console.error("Error fetching user:", error);
-      alert("Failed to load user details");
+      alert("Failed to load user details. Please try again.");
+      router.push("/admin/users");
     } finally {
       setLoading(false);
     }

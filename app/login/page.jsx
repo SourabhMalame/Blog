@@ -71,7 +71,7 @@ export default function LoginPage() {
           <div className="space-y-2 text-center">
             <h1 className="text-2xl font-bold dark:text-white">Welcome Back</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Sign in to continue to NNBlog
+              Sign in to continue to Maharashtra Startup Organisation
             </p>
           </div>
 

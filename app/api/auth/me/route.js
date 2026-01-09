@@ -47,6 +47,25 @@ export async function GET(request) {
     });
   } catch (error) {
     console.error("Auth check error:", error);
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    
+    // Provide more specific error messages
+    if (error.name === "JsonWebTokenError" || error.name === "TokenExpiredError") {
+      return NextResponse.json(
+        { error: "Invalid or expired token. Please login again." },
+        { status: 401 }
+      );
+    }
+    
+    if (error.message?.includes("User not found")) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
+    }
+    
+    return NextResponse.json(
+      { error: "Failed to get user. Please try logging in again." },
+      { status: 401 }
+    );
   }
 }

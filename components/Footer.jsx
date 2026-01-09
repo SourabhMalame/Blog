@@ -13,8 +13,8 @@ export default function Footer() {
             <Image src="/demo.png" alt="Logo" width={150} height={30} />
           </Link>
           <p className="text-sm leading-relaxed">
-            A modern news & magazine platform focused on technology, startups,
-            business insights, and trending topics.
+            Maharashtra Startup Organisation - A platform focused on technology, startups,
+            business insights, and supporting the startup ecosystem in Maharashtra.
           </p>
           <div className="flex gap-3 mt-4">
             <Facebook size={18} className="hover:text-white cursor-pointer" />
@@ -31,19 +31,22 @@ export default function Footer() {
           </h4>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link href="#">Home</Link>
+              <Link href="/" className="hover:text-white transition-colors">Home</Link>
             </li>
             <li>
-              <Link href="#">About Us</Link>
+              <Link href="/about" className="hover:text-white transition-colors">About Us</Link>
             </li>
             <li>
-              <Link href="#">Blog</Link>
+              <Link href="/?category=startups" className="hover:text-white transition-colors">Startup Resources</Link>
             </li>
             <li>
-              <Link href="#">Contact</Link>
+              <Link href="/?category=incubators" className="hover:text-white transition-colors">Incubators & Accelerators</Link>
             </li>
             <li>
-              <Link href="#">Privacy Policy</Link>
+              <Link href="/?category=funding" className="hover:text-white transition-colors">Funding Opportunities</Link>
+            </li>
+            <li>
+              <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
             </li>
           </ul>
         </div>
@@ -55,19 +58,22 @@ export default function Footer() {
           </h4>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link href="#">Technology</Link>
+              <Link href="/?category=technology" className="hover:text-white transition-colors">Technology Startups</Link>
             </li>
             <li>
-              <Link href="#">Business</Link>
+              <Link href="/?category=business" className="hover:text-white transition-colors">Business & Strategy</Link>
             </li>
             <li>
-              <Link href="#">Startups</Link>
+              <Link href="/?category=funding" className="hover:text-white transition-colors">Funding & Investment</Link>
             </li>
             <li>
-              <Link href="#">Music</Link>
+              <Link href="/?category=innovation" className="hover:text-white transition-colors">Innovation & Ideas</Link>
             </li>
             <li>
-              <Link href="#">Crypto</Link>
+              <Link href="/?category=entrepreneurship" className="hover:text-white transition-colors">Entrepreneurship</Link>
+            </li>
+            <li>
+              <Link href="/?category=success-stories" className="hover:text-white transition-colors">Success Stories</Link>
             </li>
           </ul>
         </div>
@@ -99,11 +105,11 @@ export default function Footer() {
       {/* Bottom */}
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between text-sm text-gray-400">
-          <p>© {new Date().getFullYear()} NNBlog. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Maharashtra Startup Organisation. All rights reserved.</p>
           <div className="flex gap-4 mt-2 md:mt-0">
-            <Link href="#">Terms</Link>
-            <Link href="#">Privacy</Link>
-            <Link href="#">Support</Link>
+            <Link href="/privacy-policy" className="hover:text-white transition-colors">Terms</Link>
+            <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy</Link>
+            <Link href="/contact" className="hover:text-white transition-colors">Support</Link>
           </div>
         </div>
       </div>

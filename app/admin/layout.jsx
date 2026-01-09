@@ -173,7 +173,7 @@ export default function AdminLayout({ children }) {
           {/* Footer */}
           <div className="p-4 border-t border-slate-700/50">
             <div className="text-xs text-slate-400 text-center">
-              © 2024 NNBlog Admin
+              © 2024 Maharashtra Startup Organisation Admin
             </div>
           </div>
         </div>

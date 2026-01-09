@@ -4,10 +4,10 @@ import { useState } from "react";
 
 export default function Customise() {
   const [settings, setSettings] = useState({
-    siteName: "NNBlog",
+    siteName: "Maharashtra Startup Organisation",
     siteDescription: "A modern news & magazine platform",
     logo: "/logo.png",
-    footerText: "© 2024 NNBlog. All rights reserved.",
+    footerText: "© 2024 Maharashtra Startup Organisation. All rights reserved.",
     socialLinks: {
       facebook: "",
       twitter: "",

@@ -140,7 +140,7 @@ export default function UserLayout({ children }) {
               </button>
             </div>
             <div className="text-xs text-blue-400 text-center">
-              © 2024 NNBlog
+              © 2024 Maharashtra Startup Organisation
             </div>
           </div>
         </div>

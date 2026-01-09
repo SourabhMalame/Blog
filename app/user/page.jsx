@@ -17,22 +17,26 @@ export default function UserPosts() {
 
   const fetchUserPosts = async () => {
     try {
-      const response = await fetch("/api/auth/me");
-      if (!response.ok) {
-        router.push("/login");
-        return;
-      }
-      const userData = await response.json();
-      
-      // Fetch posts by current user
-      // You'll need to create this API endpoint
-      const postsResponse = await fetch(`/api/posts?author=${userData.user.id}`);
+      // Fetch posts by current user (the API automatically filters by authenticated user)
+      const postsResponse = await fetch("/api/posts");
       if (postsResponse.ok) {
         const postsData = await postsResponse.json();
         setPosts(postsData.posts || []);
+      } else {
+        // If not authenticated, redirect to login
+        const errorData = await postsResponse.json();
+        if (postsResponse.status === 401 || postsResponse.status === 403) {
+          router.push("/login");
+          return;
+        }
+        console.error("Failed to fetch posts:", errorData.error);
       }
     } catch (error) {
       console.error("Error fetching posts:", error);
+      // If it's an auth error, redirect to login
+      if (error.message?.includes("401") || error.message?.includes("403")) {
+        router.push("/login");
+      }
     } finally {
       setLoading(false);
     }
