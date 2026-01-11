@@ -88,12 +88,15 @@ export async function POST(request) {
       }
     }
 
+    // Ensure content is not empty (required field)
+    const postContent = content && content.trim() !== "" ? content : "No content provided";
+    
     // Create the post with the authenticated user as author
     const post = await Post.create({
       title,
       slug: finalSlug,
       excerpt: excerpt || "",
-      content: content || "",
+      content: postContent,
       category,
       status: status || "draft",
       featuredImage: featuredImage || "",
@@ -111,17 +114,38 @@ export async function POST(request) {
     );
   } catch (error) {
     console.error("Error creating post:", error);
+    console.error("Error details:", {
+      name: error.name,
+      message: error.message,
+      code: error.code,
+      errors: error.errors,
+      stack: error.stack
+    });
     
     // Handle duplicate slug error
     if (error.code === 11000) {
       return NextResponse.json(
-        { error: "A post with this title already exists" },
+        { error: "A post with this title already exists. Please try a different title." },
         { status: 400 }
       );
     }
 
+    // Handle validation errors
+    if (error.name === "ValidationError") {
+      const validationErrors = Object.values(error.errors || {}).map(err => err.message).join(", ");
+      return NextResponse.json(
+        { error: `Validation error: ${validationErrors || error.message}` },
+        { status: 400 }
+      );
+    }
+
+    // Return more detailed error message for debugging
     return NextResponse.json(
-      { error: "Failed to create post" },
+      { 
+        error: error.message || "Failed to create post",
+        errorName: error.name,
+        details: process.env.NODE_ENV === "development" ? error.stack : undefined
+      },
       { status: 500 }
     );
   }

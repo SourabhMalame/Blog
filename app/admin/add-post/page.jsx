@@ -2,7 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, Type, Heading1, Image as ImageIcon, List, Quote, X } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Type,
+  Heading1,
+  Image as ImageIcon,
+  List,
+  Quote,
+  X,
+} from "lucide-react";
 
 export default function AddPost() {
   const router = useRouter();
@@ -34,8 +43,9 @@ export default function AddPost() {
   ];
 
   const addBlock = (index, type) => {
+    const date = Date.now();
     const newBlock = {
-      id: Date.now() + Math.random(),
+      id: date + Math.random(),
       type,
       content: type === "list" ? [""] : "",
       image: type === "image" ? "" : null,
@@ -120,6 +130,17 @@ export default function AddPost() {
     reader.readAsDataURL(file);
   };
 
+  const handleBlockImageUpload = async (e, blockId) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      updateBlock(blockId, "image", reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async (e, customData = null) => {
     e.preventDefault();
     setError("");
@@ -127,23 +148,69 @@ export default function AddPost() {
 
     try {
       const dataToUse = customData || formData;
-      
+
+      // Validate that there's at least some content
+      if (contentBlocks.length === 0) {
+        setError("Please add at least one content block");
+        setLoading(false);
+        return;
+      }
+
+      // Check if all blocks are empty
+      const hasContent = contentBlocks.some((block) => {
+        if (
+          block.type === "text" ||
+          block.type === "heading" ||
+          block.type === "quote"
+        ) {
+          return block.content && block.content.trim() !== "";
+        }
+        if (block.type === "list") {
+          return (
+            block.content &&
+            block.content.some((item) => item && item.trim() !== "")
+          );
+        }
+        if (block.type === "image") {
+          return block.image && block.image.trim() !== "";
+        }
+        return false;
+      });
+
+      if (!hasContent) {
+        setError("Please add content to at least one block");
+        setLoading(false);
+        return;
+      }
+
       // Convert content blocks to content string
-      const content = contentBlocks
-        .map((block) => {
-          if (block.type === "text") return block.content;
-          if (block.type === "heading") return `# ${block.content}`;
-          if (block.type === "quote") return `> ${block.content}`;
-          if (block.type === "list") {
-            return block.content.map((item) => `- ${item}`).join("\n");
-          }
-          if (block.type === "image") {
-            return `![${block.alt || "Image"}](${block.image})`;
-          }
-          return "";
-        })
-        .filter(Boolean)
-        .join("\n\n");
+      const content =
+        contentBlocks.length > 0
+          ? contentBlocks
+              .map((block) => {
+                if (block.type === "text") return block.content || "";
+                if (block.type === "heading")
+                  return block.content ? `# ${block.content}` : "";
+                if (block.type === "quote")
+                  return block.content ? `> ${block.content}` : "";
+                if (block.type === "list") {
+                  const listItems = (block.content || []).filter(
+                    (item) => item && item.trim() !== ""
+                  );
+                  return listItems.length > 0
+                    ? listItems.map((item) => `- ${item}`).join("\n")
+                    : "";
+                }
+                if (block.type === "image") {
+                  return block.image
+                    ? `![${block.alt || "Image"}](${block.image})`
+                    : "";
+                }
+                return "";
+              })
+              .filter(Boolean)
+              .join("\n\n")
+          : "";
 
       const seoData = {
         metaTitle: dataToUse.metaTitle || dataToUse.title,
@@ -175,17 +242,29 @@ export default function AddPost() {
       });
 
       const data = await response.json();
+      console.log(data);
 
       if (!response.ok) {
-        setError(data.error || "Failed to create post");
+        const errorMessage = data.error || data.message || "Failed to create post";
+        const errorDetails = data.details || data.errorName || "";
+        setError(`${errorMessage}${errorDetails ? ` (${errorDetails})` : ""}`);
+        console.error("Post creation error:", {
+          status: response.status,
+          error: data.error,
+          errorName: data.errorName,
+          details: data.details,
+          fullData: data
+        });
         setLoading(false);
         return;
       }
 
+      // Success - redirect
       router.push("/admin/posts");
       router.refresh();
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      console.error("Post creation exception:", err);
+      setError(`An error occurred: ${err.message || "Please try again."}`);
       setLoading(false);
     }
   };
@@ -205,25 +284,30 @@ export default function AddPost() {
   ];
 
   const renderBlock = (block, index) => {
-    const BlockIcon = blockTypes.find((b) => b.type === block.type)?.icon || Type;
+    const BlockIcon =
+      blockTypes.find((b) => b.type === block.type)?.icon || Type;
 
     return (
-      <div key={block.id} className="flex items-start gap-3 mb-3 group">
+      <div key={block.id} className="flex items-start gap-2 mb-2 group">
         {/* Plus button on the left */}
         <div className="relative flex-shrink-0 pt-2">
           <button
             type="button"
-            onClick={() => setShowMenuFor(showMenuFor === block.id ? null : block.id)}
-            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-red-500 dark:hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            onClick={() =>
+              setShowMenuFor(showMenuFor === block.id ? null : block.id)
+            }
+            className="w-6 h-6 flex items-center justify-center rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-red-500 dark:hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex-shrink-0"
           >
             <Plus size={16} className="text-gray-400 dark:text-gray-500" />
           </button>
-          
+
           {/* Block type menu */}
           {showMenuFor === block.id && (
-            <div className="absolute left-10 top-0 z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-2 min-w-[200px]">
-              <div className="flex items-center justify-between mb-2 pb-2 border-b border-gray-200 dark:border-gray-700">
-                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">Add Block</span>
+            <div className="absolute left-8 top-0 z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg p-1.5 min-w-[180px]">
+              <div className="flex items-center justify-between mb-1.5 pb-1.5 border-b border-gray-200 dark:border-gray-700">
+                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  Add Block
+                </span>
                 <button
                   type="button"
                   onClick={() => setShowMenuFor(null)}
@@ -232,7 +316,7 @@ export default function AddPost() {
                   <X size={14} />
                 </button>
               </div>
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 {blockTypes.map((blockType) => {
                   const Icon = blockType.icon;
                   return (
@@ -240,10 +324,15 @@ export default function AddPost() {
                       key={blockType.type}
                       type="button"
                       onClick={() => addBlock(index, blockType.type)}
-                      className="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-sm text-left"
+                      className="w-full flex items-center gap-1.5 px-2 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-xs text-left"
                     >
-                      <Icon size={16} className="text-gray-600 dark:text-gray-400" />
-                      <span className="text-gray-700 dark:text-gray-300">{blockType.label}</span>
+                      <Icon
+                        size={16}
+                        className="text-gray-600 dark:text-gray-400"
+                      />
+                      <span className="text-gray-700 dark:text-gray-300">
+                        {blockType.label}
+                      </span>
                     </button>
                   );
                 })}
@@ -258,9 +347,11 @@ export default function AddPost() {
             {block.type === "text" && (
               <textarea
                 value={block.content}
-                onChange={(e) => updateBlock(block.id, "content", e.target.value)}
+                onChange={(e) =>
+                  updateBlock(block.id, "content", e.target.value)
+                }
                 rows={3}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white resize-none"
+                className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white resize-none"
                 placeholder="Enter text content..."
               />
             )}
@@ -269,8 +360,10 @@ export default function AddPost() {
               <input
                 type="text"
                 value={block.content}
-                onChange={(e) => updateBlock(block.id, "content", e.target.value)}
-                className="w-full px-4 py-3 text-xl font-bold border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
+                onChange={(e) =>
+                  updateBlock(block.id, "content", e.target.value)
+                }
+                className="w-full px-3 py-1.5 text-lg font-bold border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
                 placeholder="Enter heading..."
               />
             )}
@@ -280,15 +373,31 @@ export default function AddPost() {
                 <input
                   type="url"
                   value={block.image || ""}
-                  onChange={(e) => updateBlock(block.id, "image", e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
+                  onChange={(e) =>
+                    updateBlock(block.id, "image", e.target.value)
+                  }
+                  className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
                   placeholder="Image URL"
                 />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">OR</span>
+                  <label className="flex-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleBlockImageUpload(e, block.id)}
+                      className="hidden"
+                    />
+                    <span className="inline-block px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-sm text-center">
+                      Upload Image
+                    </span>
+                  </label>
+                </div>
                 <input
                   type="text"
                   value={block.alt || ""}
                   onChange={(e) => updateBlock(block.id, "alt", e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
                   placeholder="Image alt text (optional)"
                 />
                 {block.image && (
@@ -305,15 +414,17 @@ export default function AddPost() {
             )}
 
             {block.type === "list" && (
-              <div className="space-y-2 border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-900/50">
+              <div className="space-y-1.5 border border-gray-200 dark:border-gray-700 rounded p-2 bg-gray-50 dark:bg-gray-900/50">
                 {(block.content || []).map((item, itemIndex) => (
                   <div key={itemIndex} className="flex items-center gap-2">
                     <span className="text-gray-500 dark:text-gray-400">•</span>
                     <input
                       type="text"
                       value={item}
-                      onChange={(e) => updateListItem(block.id, itemIndex, e.target.value)}
-                      className="flex-1 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white text-sm"
+                      onChange={(e) =>
+                        updateListItem(block.id, itemIndex, e.target.value)
+                      }
+                      className="flex-1 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white text-xs"
                       placeholder="List item"
                     />
                     <button
@@ -328,7 +439,7 @@ export default function AddPost() {
                 <button
                   type="button"
                   onClick={() => addListItem(block.id)}
-                  className="mt-1 px-3 py-1.5 text-sm border border-dashed border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400"
+                  className="mt-1 px-2 py-1 text-xs border border-dashed border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400"
                 >
                   + Add List Item
                 </button>
@@ -339,9 +450,11 @@ export default function AddPost() {
               <div className="border-l-4 border-red-500 pl-4">
                 <textarea
                   value={block.content}
-                  onChange={(e) => updateBlock(block.id, "content", e.target.value)}
+                  onChange={(e) =>
+                    updateBlock(block.id, "content", e.target.value)
+                  }
                   rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 italic dark:bg-gray-700 dark:text-white resize-none"
+                  className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-red-500 focus:border-red-500 italic dark:bg-gray-700 dark:text-white resize-none"
                   placeholder="Enter quote text..."
                 />
               </div>
@@ -352,9 +465,9 @@ export default function AddPost() {
           <button
             type="button"
             onClick={() => deleteBlock(block.id)}
-            className="flex-shrink-0 p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+            className="flex-shrink-0 p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <Trash2 size={18} />
+            <Trash2 size={14} />
           </button>
         </div>
       </div>
@@ -362,16 +475,18 @@ export default function AddPost() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-4">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Create New Post</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+          Create New Post
+        </h1>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
           Write and publish your blog post with SEO optimization
         </p>
       </div>
 
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-3 py-2 rounded text-xs">
           {error}
         </div>
       )}
@@ -381,7 +496,7 @@ export default function AddPost() {
           <button
             type="button"
             onClick={() => setActiveTab("content")}
-            className={`flex-1 px-6 py-3 text-sm font-medium transition-colors ${
+            className={`flex-1 px-4 py-2 text-xs font-medium transition-colors ${
               activeTab === "content"
                 ? "text-red-600 dark:text-red-400 border-b-2 border-red-600 dark:border-red-400 bg-red-50 dark:bg-red-900/20"
                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
@@ -395,7 +510,7 @@ export default function AddPost() {
               setActiveTab("seo");
               setShowMenuFor(null);
             }}
-            className={`flex-1 px-6 py-3 text-sm font-medium transition-colors ${
+            className={`flex-1 px-4 py-2 text-xs font-medium transition-colors ${
               activeTab === "seo"
                 ? "text-red-600 dark:text-red-400 border-b-2 border-red-600 dark:border-red-400 bg-red-50 dark:bg-red-900/20"
                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
@@ -405,11 +520,11 @@ export default function AddPost() {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-4 space-y-4">
           {activeTab === "content" && (
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Post Title <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -417,79 +532,98 @@ export default function AddPost() {
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
                   placeholder="Enter post title"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Excerpt / Short Description
                 </label>
                 <textarea
                   name="excerpt"
                   value={formData.excerpt}
                   onChange={handleChange}
-                  rows={3}
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  rows={2}
+                  className="w-full rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 resize-none"
                   placeholder="Brief description of your post"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Category <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
                   required
                 >
                   <option value="">Select a category</option>
                   {categories.map((cat) => (
                     <option key={cat} value={cat}>
-                      {cat.charAt(0).toUpperCase() + cat.slice(1).replace("-", " ")}
+                      {cat.charAt(0).toUpperCase() +
+                        cat.slice(1).replace("-", " ")}
                     </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Featured Image URL
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Featured Image
                 </label>
-                <input
-                  type="url"
-                  name="featuredImage"
-                  value={formData.featuredImage}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="https://example.com/image.jpg"
-                />
-                {formData.featuredImage && (
-                  <img
-                    src={formData.featuredImage}
-                    alt="Preview"
-                    className="mt-2 w-full h-48 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                    }}
+                <div className="space-y-2">
+                  <input
+                    type="url"
+                    name="featuredImage"
+                    value={formData.featuredImage}
+                    onChange={handleChange}
+                    className="w-full rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
+                    placeholder="https://example.com/image.jpg"
                   />
-                )}
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">OR</span>
+                    <label className="flex-1">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, "featuredImage")}
+                        className="hidden"
+                      />
+                      <span className="inline-block w-full px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-xs text-center">
+                        Upload Image
+                      </span>
+                    </label>
+                  </div>
+                  {formData.featuredImage && (
+                    <img
+                      src={formData.featuredImage}
+                      alt="Preview"
+                      className="w-full max-w-md h-32 object-cover rounded border border-gray-200 dark:border-gray-700"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                      }}
+                    />
+                  )}
+                </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Content <span className="text-red-500">*</span>
                 </label>
-                
-                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900/50 min-h-[200px]">
+
+                <div className="border border-gray-200 dark:border-gray-700 rounded p-3 bg-gray-50 dark:bg-gray-900/50 min-h-[150px]">
                   {contentBlocks.length === 0 ? (
-                    <div className="text-center py-8">
-                      <p className="text-gray-500 dark:text-gray-400 mb-4">Click the + button below to add your first content block</p>
+                    <div className="text-center py-6">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                        Click the + button below to add your first content block
+                      </p>
                       <button
                         type="button"
                         onClick={() => {
@@ -500,7 +634,7 @@ export default function AddPost() {
                           };
                           setContentBlocks([newBlock]);
                         }}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-red-500 text-white rounded hover:bg-red-600 transition"
                       >
                         <Plus size={18} />
                         Add First Block
@@ -508,22 +642,31 @@ export default function AddPost() {
                     </div>
                   ) : (
                     <div className="space-y-0">
-                      {contentBlocks.map((block, index) => renderBlock(block, index))}
-                      
+                      {contentBlocks.map((block, index) =>
+                        renderBlock(block, index)
+                      )}
+
                       {/* Plus button at the end */}
                       <div className="flex items-start gap-3 mt-3">
                         <button
                           type="button"
-                          onClick={() => setShowMenuFor(showMenuFor === "end" ? null : "end")}
+                          onClick={() =>
+                            setShowMenuFor(showMenuFor === "end" ? null : "end")
+                          }
                           className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-red-500 dark:hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex-shrink-0"
                         >
-                          <Plus size={16} className="text-gray-400 dark:text-gray-500" />
+                          <Plus
+                            size={16}
+                            className="text-gray-400 dark:text-gray-500"
+                          />
                         </button>
-                        
+
                         {showMenuFor === "end" && (
-                          <div className="relative z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-2 min-w-[200px]">
-                            <div className="flex items-center justify-between mb-2 pb-2 border-b border-gray-200 dark:border-gray-700">
-                              <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">Add Block</span>
+                          <div className="relative z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg p-1.5 min-w-[180px]">
+                            <div className="flex items-center justify-between mb-1.5 pb-1.5 border-b border-gray-200 dark:border-gray-700">
+                              <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                                Add Block
+                              </span>
                               <button
                                 type="button"
                                 onClick={() => setShowMenuFor(null)}
@@ -539,11 +682,21 @@ export default function AddPost() {
                                   <button
                                     key={blockType.type}
                                     type="button"
-                                    onClick={() => addBlock(contentBlocks.length - 1, blockType.type)}
+                                    onClick={() =>
+                                      addBlock(
+                                        contentBlocks.length - 1,
+                                        blockType.type
+                                      )
+                                    }
                                     className="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-sm text-left"
                                   >
-                                    <Icon size={16} className="text-gray-600 dark:text-gray-400" />
-                                    <span className="text-gray-700 dark:text-gray-300">{blockType.label}</span>
+                                    <Icon
+                                      size={16}
+                                      className="text-gray-600 dark:text-gray-400"
+                                    />
+                                    <span className="text-gray-700 dark:text-gray-300">
+                                      {blockType.label}
+                                    </span>
                                   </button>
                                 );
                               })}
@@ -564,7 +717,7 @@ export default function AddPost() {
                   name="status"
                   value={formData.status}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
                 >
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>
@@ -574,10 +727,11 @@ export default function AddPost() {
           )}
 
           {activeTab === "seo" && (
-            <div className="space-y-6">
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-                <p className="text-sm text-red-800 dark:text-red-200">
-                  <strong>Tip:</strong> SEO fields are optional. If left empty, they will automatically use your post title and excerpt.
+            <div className="space-y-4">
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded p-3">
+                <p className="text-xs text-red-800 dark:text-red-200">
+                  <strong>Tip:</strong> SEO fields are optional. If left empty,
+                  they will automatically use your post title and excerpt.
                 </p>
               </div>
 
@@ -590,7 +744,7 @@ export default function AddPost() {
                   name="metaTitle"
                   value={formData.metaTitle}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
                   placeholder="SEO title for search engines"
                   maxLength={60}
                 />
@@ -608,7 +762,7 @@ export default function AddPost() {
                   value={formData.metaDescription}
                   onChange={handleChange}
                   rows={3}
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
                   placeholder="SEO description for search engines"
                   maxLength={160}
                 />
@@ -626,7 +780,7 @@ export default function AddPost() {
                   name="metaKeywords"
                   value={formData.metaKeywords}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
                   placeholder="Comma-separated keywords"
                 />
               </div>
@@ -636,7 +790,7 @@ export default function AddPost() {
                   Open Graph (Social Media)
                 </h3>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       OG Title
@@ -646,7 +800,7 @@ export default function AddPost() {
                       name="ogTitle"
                       value={formData.ogTitle}
                       onChange={handleChange}
-                      className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className="w-full rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
                       placeholder="Title for social media sharing"
                     />
                   </div>
@@ -660,7 +814,7 @@ export default function AddPost() {
                       value={formData.ogDescription}
                       onChange={handleChange}
                       rows={3}
-                      className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className="w-full rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
                       placeholder="Description for social media sharing"
                     />
                   </div>
@@ -675,11 +829,13 @@ export default function AddPost() {
                         name="ogImage"
                         value={formData.ogImage}
                         onChange={handleChange}
-                        className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                        className="w-full rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
                         placeholder="Image URL for social media"
                       />
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-500 dark:text-gray-400">OR</span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          OR
+                        </span>
                         <label className="flex-1">
                           <input
                             type="file"

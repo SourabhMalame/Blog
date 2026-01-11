@@ -40,70 +40,70 @@ export default function AdminPosts() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Posts</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage your blog posts</p>
+          <h1 className="text-xl font-bold text-gray-900">Posts</h1>
+          <p className="text-xs text-gray-500 mt-0.5">Manage your blog posts</p>
         </div>
         <Link
           href="/admin/add-post"
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-xl hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/25 hover:shadow-xl hover:shadow-red-500/30 transition-all duration-200 font-medium"
+          className="inline-flex items-center gap-1.5 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg hover:from-red-600 hover:to-red-700 shadow-md shadow-red-500/25 hover:shadow-lg hover:shadow-red-500/30 transition-all duration-200 font-medium text-sm"
         >
-          <PlusCircle size={20} />
+          <PlusCircle size={16} />
           Add New Post
         </Link>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg shadow-blue-500/25">
-          <div className="text-sm font-medium opacity-90">Total Posts</div>
-          <div className="text-3xl font-bold mt-2">{posts.length}</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-3 text-white shadow-md shadow-blue-500/25">
+          <div className="text-xs font-medium opacity-90">Total Posts</div>
+          <div className="text-2xl font-bold mt-1">{posts.length}</div>
         </div>
-        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg shadow-green-500/25">
-          <div className="text-sm font-medium opacity-90">Published</div>
-          <div className="text-3xl font-bold mt-2">
+        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-3 text-white shadow-md shadow-green-500/25">
+          <div className="text-xs font-medium opacity-90">Published</div>
+          <div className="text-2xl font-bold mt-1">
             {posts.filter((p) => p.status === "Published").length}
           </div>
         </div>
-        <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-2xl p-6 text-white shadow-lg shadow-yellow-500/25">
-          <div className="text-sm font-medium opacity-90">Drafts</div>
-          <div className="text-3xl font-bold mt-2">
+        <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg p-3 text-white shadow-md shadow-yellow-500/25">
+          <div className="text-xs font-medium opacity-90">Drafts</div>
+          <div className="text-2xl font-bold mt-1">
             {posts.filter((p) => p.status === "Draft").length}
           </div>
         </div>
-        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg shadow-purple-500/25">
-          <div className="text-sm font-medium opacity-90">Categories</div>
-          <div className="text-3xl font-bold mt-2">
+        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-3 text-white shadow-md shadow-purple-500/25">
+          <div className="text-xs font-medium opacity-90">Categories</div>
+          <div className="text-2xl font-bold mt-1">
             {new Set(posts.map((p) => p.category)).size}
           </div>
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gradient-to-r from-gray-50 to-gray-100/50">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
                   Image
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
                   Title
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
                   Category
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
                   Date
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -114,8 +114,8 @@ export default function AdminPosts() {
                   key={post.id}
                   className="hover:bg-gradient-to-r hover:from-gray-50 hover:to-white transition-colors"
                 >
-                  <td className="px-6 py-4">
-                    <div className="w-20 h-14 relative rounded-lg overflow-hidden shadow-md ring-1 ring-gray-200">
+                  <td className="px-3 py-2">
+                    <div className="w-16 h-10 relative rounded overflow-hidden shadow-sm ring-1 ring-gray-200">
                       <Image
                         src={post.image}
                         alt={post.title}
@@ -124,22 +124,22 @@ export default function AdminPosts() {
                       />
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm font-semibold text-gray-900 max-w-md">
+                  <td className="px-3 py-2">
+                    <div className="text-xs font-semibold text-gray-900 max-w-md line-clamp-2">
                       {post.title}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  <td className="px-3 py-2">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-100 text-blue-800">
                       {post.category}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className="text-sm text-gray-600">{post.date}</span>
+                  <td className="px-3 py-2">
+                    <span className="text-xs text-gray-600">{post.date}</span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-3 py-2">
                     <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                      className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold ${
                         post.status === "Published"
                           ? "bg-green-100 text-green-800"
                           : "bg-yellow-100 text-yellow-800"
@@ -148,26 +148,26 @@ export default function AdminPosts() {
                       {post.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
+                  <td className="px-3 py-2">
+                    <div className="flex items-center gap-1">
                       <Link
                         href="/post"
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                        className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition"
                         title="View"
                       >
-                        <Eye size={18} />
+                        <Eye size={14} />
                       </Link>
                       <button
-                        className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition"
+                        className="p-1.5 text-green-600 hover:bg-green-50 rounded transition"
                         title="Edit"
                       >
-                        <Edit size={18} />
+                        <Edit size={14} />
                       </button>
                       <button
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                        className="p-1.5 text-red-600 hover:bg-red-50 rounded transition"
                         title="Delete"
                       >
-                        <Trash2 size={18} />
+                        <Trash2 size={14} />
                       </button>
                     </div>
                   </td>

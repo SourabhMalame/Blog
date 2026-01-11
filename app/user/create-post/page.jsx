@@ -119,6 +119,17 @@ export default function CreatePost() {
     reader.readAsDataURL(file);
   };
 
+  const handleBlockImageUpload = async (e, blockId) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      updateBlock(blockId, "image", reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async (e, customData = null) => {
     e.preventDefault();
     setError("");
@@ -127,21 +138,51 @@ export default function CreatePost() {
     try {
       const dataToUse = customData || formData;
       
-      const content = contentBlocks
-        .map((block) => {
-          if (block.type === "text") return block.content;
-          if (block.type === "heading") return `# ${block.content}`;
-          if (block.type === "quote") return `> ${block.content}`;
-          if (block.type === "list") {
-            return block.content.map((item) => `- ${item}`).join("\n");
-          }
-          if (block.type === "image") {
-            return `![${block.alt || "Image"}](${block.image})`;
-          }
-          return "";
-        })
-        .filter(Boolean)
-        .join("\n\n");
+      // Validate that there's at least some content
+      if (contentBlocks.length === 0) {
+        setError("Please add at least one content block");
+        setLoading(false);
+        return;
+      }
+      
+      // Check if all blocks are empty
+      const hasContent = contentBlocks.some(block => {
+        if (block.type === "text" || block.type === "heading" || block.type === "quote") {
+          return block.content && block.content.trim() !== "";
+        }
+        if (block.type === "list") {
+          return block.content && block.content.some(item => item && item.trim() !== "");
+        }
+        if (block.type === "image") {
+          return block.image && block.image.trim() !== "";
+        }
+        return false;
+      });
+      
+      if (!hasContent) {
+        setError("Please add content to at least one block");
+        setLoading(false);
+        return;
+      }
+      
+      const content = contentBlocks.length > 0
+        ? contentBlocks
+            .map((block) => {
+              if (block.type === "text") return block.content || "";
+              if (block.type === "heading") return block.content ? `# ${block.content}` : "";
+              if (block.type === "quote") return block.content ? `> ${block.content}` : "";
+              if (block.type === "list") {
+                const listItems = (block.content || []).filter(item => item && item.trim() !== "");
+                return listItems.length > 0 ? listItems.map((item) => `- ${item}`).join("\n") : "";
+              }
+              if (block.type === "image") {
+                return block.image ? `![${block.alt || "Image"}](${block.image})` : "";
+              }
+              return "";
+            })
+            .filter(Boolean)
+            .join("\n\n")
+        : "";
 
       const seoData = {
         metaTitle: dataToUse.metaTitle || dataToUse.title,
@@ -175,15 +216,26 @@ export default function CreatePost() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Failed to create post");
+        const errorMessage = data.error || data.message || "Failed to create post";
+        const errorDetails = data.details || data.errorName || "";
+        setError(`${errorMessage}${errorDetails ? ` (${errorDetails})` : ""}`);
+        console.error("Post creation error:", {
+          status: response.status,
+          error: data.error,
+          errorName: data.errorName,
+          details: data.details,
+          fullData: data
+        });
         setLoading(false);
         return;
       }
 
+      // Success - redirect
       router.push("/user");
       router.refresh();
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      console.error("Post creation exception:", err);
+      setError(`An error occurred: ${err.message || "Please try again."}`);
       setLoading(false);
     }
   };
@@ -282,6 +334,20 @@ export default function CreatePost() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                   placeholder="Image URL"
                 />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">OR</span>
+                  <label className="flex-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleBlockImageUpload(e, block.id)}
+                      className="hidden"
+                    />
+                    <span className="inline-block px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-sm text-center">
+                      Upload Image
+                    </span>
+                  </label>
+                </div>
                 <input
                   type="text"
                   value={block.alt || ""}
@@ -458,26 +524,42 @@ export default function CreatePost() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Featured Image URL
+                  Featured Image
                 </label>
-                <input
-                  type="url"
-                  name="featuredImage"
-                  value={formData.featuredImage}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="https://example.com/image.jpg"
-                />
-                {formData.featuredImage && (
-                  <img
-                    src={formData.featuredImage}
-                    alt="Preview"
-                    className="mt-2 w-full max-w-md h-48 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                    }}
+                <div className="space-y-3">
+                  <input
+                    type="url"
+                    name="featuredImage"
+                    value={formData.featuredImage}
+                    onChange={handleChange}
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="https://example.com/image.jpg"
                   />
-                )}
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">OR</span>
+                    <label className="flex-1">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, "featuredImage")}
+                        className="hidden"
+                      />
+                      <span className="inline-block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-sm text-center">
+                        Upload Image
+                      </span>
+                    </label>
+                  </div>
+                  {formData.featuredImage && (
+                    <img
+                      src={formData.featuredImage}
+                      alt="Preview"
+                      className="w-full max-w-md h-48 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                      }}
+                    />
+                  )}
+                </div>
               </div>
 
               <div>
